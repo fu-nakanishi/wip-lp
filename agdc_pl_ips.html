@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インタラクティブ・レポート：再生的リーダーシップ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: A narrative-driven, interactive journey. It starts with a hook (the regenerative metaphor), diagnoses the problem (Organizational Sclerosis), presents the core solution as an interactive 5-step protocol diagram, highlights the critical risk (Organizational Cancer), and culminates in the partnership proposal (the "CiRA" model) as a clear call to action. This structure transforms the report into an engaging story, guiding the user from problem to solution, making the final proposal feel both logical and essential. -->
+    <!-- Visualization & Content Choices: The main interaction is a clickable 5-step process diagram (built with HTML/Tailwind). Goal: Organize complex information. Method: Clicking a step dynamically updates a content panel using JS, pulling data from a structured JS object. This keeps the user focused. A doughnut chart (Chart.js) is used in Step 3 to visually represent the two halves of the "Cultivation" environment (Intangibles/Tangibles), reinforcing their equal importance. Goal: Inform/Compare. The "Risk" section uses stark contrast to visually communicate danger. Goal: Inform/Warn. The entire flow is designed to build a compelling case for the final proposal. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .active-step {
+            background-color: #0284c7 !important; /* sky-600 */
+            color: white !important;
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .content-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 80vw;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+
+        <header class="text-center py-12">
+            <h1 class="text-3xl md:text-5xl font-bold text-sky-800 mb-4">再生的リーダーシップ</h1>
+            <p class="text-lg md:text-xl text-slate-600">iPS細胞技術に学ぶ、組織文化変革の設計図</p>
+        </header>
+
+        <main>
+            <section id="diagnosis" class="mb-20 p-8 bg-white rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold text-center mb-2 text-amber-700">1. 診断：貴社の組織は硬化していませんか？</h2>
+                <p class="text-center text-slate-600 mb-8">組織は生きたシステムです。しかし、成功体験が積み重なると、変化に対応できない「組織硬化症」に陥ることがあります。それは、かつて有効だった文化が、今や成長の足枷となっている状態です。</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <div class="p-6 bg-amber-50 rounded-lg">
+                        <h3 class="font-bold text-amber-800 mb-2">変化への抵抗</h3>
+                        <p class="text-sm text-slate-600">新しい手法やツールへの導入が、目に見えない壁に阻まれる。</p>
+                    </div>
+                    <div class="p-6 bg-amber-50 rounded-lg">
+                        <h3 class="font-bold text-amber-800 mb-2">意思決定の遅延</h3>
+                        <p class="text-sm text-slate-600">完璧な情報を求めるあまり、好機を逃し、会議が形骸化している。</p>
+                    </div>
+                    <div class="p-6 bg-amber-50 rounded-lg">
+                        <h3 class="font-bold text-amber-800 mb-2">イノベーションの枯渇</h3>
+                        <p class="text-sm text-slate-600">従業員は挑戦を恐れ、前例踏襲の安全な道ばかりを選ぶ。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="protocol" class="mb-20">
+                <h2 class="text-2xl font-bold text-center mb-2 text-sky-800">2. プロトコル：組織再生への5ステップ</h2>
+                <p class="text-center text-slate-600 mb-12 max-w-3xl mx-auto">対症療法的な「変革」ではなく、根本的な「再生」へ。私たちは、iPS細胞の組織培養プロセスを応用した、科学的かつ体系的なプロトコルで、貴社の組織文化再生をガイドします。下の各ステップをクリックして、詳細をご覧ください。</p>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div id="protocol-nav" class="flex lg:flex-col justify-center gap-3 lg:gap-4 flex-wrap lg:w-1/3">
+                    </div>
+
+                    <div id="protocol-content" class="lg:w-2/3 bg-white p-6 md:p-8 rounded-xl shadow-lg min-h-[400px]">
+                    </div>
+                </div>
+            </section>
+
+            <section id="risk" class="mb-20 p-8 rounded-xl shadow-lg bg-slate-800 text-white">
+                <h2 class="text-2xl font-bold text-center mb-4 text-red-400">3. 警告：管理なき変革がもたらす「組織のがん化」</h2>
+                <p class="text-center text-slate-300 mb-6 max-w-3xl mx-auto">iPS細胞研究における最大のリスクが「がん化」であるように、不適切に管理された文化変革は、単なる失敗以上の悲劇を生みます。それは、冷笑主義と抵抗が蔓延し、組織の活力を内側から蝕む「組織のがん」です。</p>
+                <div class="flex justify-center items-center p-6 bg-slate-900 rounded-lg">
+                    <div class="text-center">
+                        <p class="text-4xl mb-4">🚨</p>
+                        <h3 class="text-xl font-bold text-red-400">これは、何もしないより悪い結果です。</h3>
+                        <p class="text-slate-400 mt-2">曖昧なビジョン、一貫性のないリーダーシップ、旧態依然のシステム。これらが「がん細胞」の温床となります。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cta" class="bg-white rounded-xl shadow-2xl overflow-hidden">
+                <div class="p-8 md:p-12">
+                    <h2 class="text-2xl md:text-3xl font-bold text-center text-sky-800 mb-4">4. 提案：貴社専属の「iPS細胞研究センター」に</h2>
+                    <p class="text-center text-slate-600 mb-8 max-w-3xl mx-auto">この複雑でリスクの高い「組織の再生医療」を、自己流で進めるべきではありません。我々は、世界最高峰のiPS細胞研究所「CiRA」のように、貴社にとっての文化再生のCOE (Center of Excellence) となります。</p>
+
+                    <div class="bg-sky-50 p-6 rounded-lg border-l-4 border-sky-500">
+                        <p class="text-base text-slate-700 leading-relaxed font-medium">
+                            貴社の『体細胞』、つまり社員一人ひとりの内に眠る無限の可能性を解き放ち、未来を創造する組織へと自己再生させる。これは単なる『変革』ではありません。『組織の再生医療』です。しかし、このプロセスには専門的な知識と厳格な管理が不可欠です。自己流で進めれば、機能不全という『組織のがん化』を招くリスクさえあります。
+                            <br><br>
+                            <strong class="text-sky-700">我々は、貴社にとっての『iPS細胞研究センター（CiRA）』となることをご提案します。</strong>我々が持つ実績あるプロトコルと安全な『培養環境』の中で、貴社だけのユニークで強靭な組織文化を、責任を持って共に創り上げていく。さあ、一緒に貴社の未来を再生しませんか？
+                        </p>
+                    </div>
+
+                    <div class="text-center mt-8">
+                        <button class="bg-sky-600 text-white font-bold py-3 px-8 rounded-full hover:bg-sky-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            共に未来を再生する
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center py-8 mt-12">
+            <p class="text-sm text-slate-500">&copy; 2025 Regenerative Leadership Partners. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const protocolData = {
+        sourcing: {
+            title: 'Step 1: ソーシング（現状把握）',
+            icon: '🧬',
+            ips: '科学者はドナーから皮膚や血液を採取し、遺伝的構成を理解します。',
+            org: '組織の「生体組織診断」です。サーベイやインタビューを通じて、理想と現実の文化のギャップを正確に特定します。',
+            action: '定量的・定性的手法を組み合わせ、組織文化をマッピングする。',
+            chart: false
+        },
+        reprogramming: {
+            title: 'Step 2: リプログラミング（理想像の明確化）',
+            icon: '🔄',
+            ips: '「山中ファクター」を導入し、細胞をあらゆる可能性を秘めた初期状態に戻します。',
+            org: 'リーダーシップチームが、組織の未来を導く、交渉の余地のない中核的MVV（ミッション・ビジョン・バリュー）を定義します。',
+            action: '本質的でないものを削ぎ落とし、強力でシンプルな真実を見つけ出す。',
+            chart: false
+        },
+        cultivation: {
+            title: 'Step 3: 培養（没入環境の創造）',
+            icon: '🧪',
+            ips: '初期化細胞は、栄養豊富な「培養液」と成長の「足場」があるバイオリアクターで増殖させます。',
+            org: '新しい文化が育つための「心理的安全性（培養液）」と「物理的システム（足場）」の両方を同時に設計・管理します。',
+            action: 'リーダーの率先垂範と、業務フローや評価制度の再設計を両輪で進める。',
+            chart: true
+        },
+        differentiation: {
+            title: 'Step 4: 分化（新たな行動様式の定義）',
+            icon: '🎯',
+            ips: '特定の成長因子を与え、多能性細胞を目的の機能細胞（神経、心筋など）へと正確に誘導します。',
+            org: '抽象的な価値観を、役割に応じた「具体的で観察可能な行動」に翻訳します。「協調性」の定義は、営業とエンジニアで異なります。',
+            action: 'コンピテンシーモデル開発、研修、成功事例の共有と称賛。',
+            chart: false
+        },
+        integration: {
+            title: 'Step 5: 統合（定着と強化）',
+            icon: '🔗',
+            ips: '培養された新しい組織を体内に移植し、拒絶反応なく機能させます。',
+            org: '新しい文化を、組織の「免疫システム」である人事プロセス（採用、評価、昇進、報酬）に完全に組み込みます。',
+            action: '全ての制度を、新しい文化的な行動様式と整合させる。',
+            chart: false
+        }
+    };
+
+    const navContainer = document.getElementById('protocol-nav');
+    const contentContainer = document.getElementById('protocol-content');
+    let currentChart = null;
+
+    Object.keys(protocolData).forEach((key, index) => {
+        const data = protocolData[key];
+        const button = document.createElement('button');
+        button.className = 'w-full text-left p-4 rounded-lg bg-white hover:bg-sky-100 transition-all duration-200 shadow font-medium border border-slate-200 flex items-center';
+        button.dataset.step = key;
+        
+        const keyword = data.title.split(': ')[1].split('（')[0];
+        button.innerHTML = `<span class="text-3xl mr-4">${data.icon}</span><span class="font-semibold text-slate-700">${keyword}</span>`;
+
+        if (index === 0) {
+            button.classList.add('active-step');
+        }
+        navContainer.appendChild(button);
+    });
+
+    const updateContent = (stepKey) => {
+        const data = protocolData[stepKey];
+        contentContainer.innerHTML = ''; 
+
+        const tempDiv = document.createElement('div');
+        tempDiv.className = 'content-fade-in';
+        let chartHtml = '';
+        if (data.chart) {
+            chartHtml = `<div class="my-6">
+                            <div class="chart-container">
+                                <canvas id="cultivationChart"></canvas>
+                            </div>
+                            <p class="text-center text-sm text-slate-500 mt-2">文化の成長には「無形資産」と「有形資産」の両輪が不可欠です。</p>
+                        </div>`;
+        }
+        
+        tempDiv.innerHTML = `
+            <h3 class="text-xl font-bold text-sky-700 mb-4 flex items-center"><span class="text-3xl mr-3">${data.icon}</span>${data.title}</h3>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-bold text-sm text-slate-500">iPS細胞プロセス</h4>
+                    <p class="text-slate-700">${data.ips}</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-500">組織文化への応用</h4>
+                    <p class="text-slate-700">${data.org}</p>
+                </div>
+                ${chartHtml}
+                <div class="p-4 bg-sky-50 rounded-lg">
+                    <h4 class="font-bold text-sm text-sky-800">主要アクション</h4>
+                    <p class="text-sky-900 font-medium">${data.action}</p>
+                </div>
+            </div>
+        `;
+        contentContainer.appendChild(tempDiv);
+
+        if (data.chart) {
+            const ctx = document.getElementById('cultivationChart').getContext('2d');
+            if (currentChart) {
+                currentChart.destroy();
+            }
+            currentChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['培養液 (心理的安全性など無形資産)', '足場 (制度・システムなど有形資産)'],
+                    datasets: [{
+                        data: [50, 50],
+                        backgroundColor: ['#38bdf8', '#0ea5e9'],
+                        borderColor: ['#ffffff'],
+                        borderWidth: 4,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    }
+                }
+            });
+        }
+    };
+    
+    navContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+
+        document.querySelectorAll('#protocol-nav button').forEach(btn => btn.classList.remove('active-step'));
+        button.classList.add('active-step');
+
+        const stepKey = button.dataset.step;
+        updateContent(stepKey);
+    });
+
+    updateContent('sourcing');
+});
+</script>
+
+</body>
+</html>

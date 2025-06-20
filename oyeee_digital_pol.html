@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デジタルPOL - 牡蠣養殖事業 総合支援プラットフォーム v4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+        }
+        .sidebar-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: #1e3a8a; /* darker blue */
+            color: #eff6ff; /* lighter blue */
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .table-auto th, .table-auto td {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex">
+
+    <aside class="w-64 bg-blue-900 text-blue-100 p-4 flex flex-col fixed h-full">
+        <h1 class="text-2xl font-bold mb-6">牡蠣養殖支援PF v4</h1>
+        <nav>
+            <ul>
+                <li><a href="#" class="sidebar-link block py-2 px-4 rounded active" data-view="dashboard">ダッシュボード</a></li>
+                <li><a href="#" class="sidebar-link block py-2 px-4 rounded" data-view="pbi-list">PBI一覧</a></li>
+                <li><a href="#" class="sidebar-link block py-2 px-4 rounded" data-view="simulator">事業計画シミュレーター</a></li>
+                <li><a href="#" class="sidebar-link block py-2 px-4 rounded" data-view="startup-guide">立ち上げガイド</a></li>
+                <li><a href="#" class="sidebar-link block py-2 px-4 rounded" data-view="knowledge-base">ナレッジベース</a></li>
+            </ul>
+        </nav>
+        <div class="mt-auto text-xs text-blue-300">
+            <p>デジタルPOL - システムエンジニア</p>
+            <p>Generated: <span id="generation-date"></span></p>
+        </div>
+    </aside>
+
+    <main class="ml-64 p-8 flex-1">
+        <div id="dashboard-view" class="view-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">プロジェクト概要：新規参入者向け総合事業伴走プラットフォーム</h2>
+            <p class="text-gray-600 mb-8">事業計画から販売戦略まで、牡蠣養殖事業の立ち上げ全フェーズをナビゲートする「デジタル事業立ち上げコンサルタント」</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold text-gray-700">総PBI数</h3>
+                    <p class="text-4xl font-bold text-blue-800" id="total-pbi-count">49</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold text-gray-700">総工数 (PBI-001 & 002)</h3>
+                    <p class="text-4xl font-bold text-blue-800">79 <span class="text-xl">人日</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-lg font-semibold text-gray-700">最重要カテゴリ</h3>
+                    <p class="text-2xl font-bold text-blue-800">事業計画・資金調達支援</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <div class="lg:col-span-3 bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">PBIカテゴリ別分布</h3>
+                    <canvas id="pbiCategoryChart"></canvas>
+                </div>
+                <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow grid grid-rows-2 gap-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">PBI-001 工数内訳 (50人日)</h3>
+                        <canvas id="pbi001EffortChart"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">PBI-002 工数内訳 (29人日)</h3>
+                        <canvas id="pbi002EffortChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pbi-list-view" class="view-content hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">プロダクトバックログアイテム (PBI) 一覧</h2>
+            
+            <div class="bg-white p-4 rounded-lg shadow mb-6 flex items-center gap-4">
+                <div class="flex-grow">
+                    <label for="search-pbi" class="sr-only">PBI検索</label>
+                    <input type="text" id="search-pbi" placeholder="PBIタイトルで検索..." class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                    <label for="filter-category" class="sr-only">カテゴリフィルター</label>
+                    <select id="filter-category" class="w-64 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        <option value="all">すべてのカテゴリ</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+                <table class="w-full table-auto text-left">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-sm font-semibold text-gray-600">ID</th>
+                            <th class="px-6 py-3 text-sm font-semibold text-gray-600">タイトル</th>
+                            <th class="px-6 py-3 text-sm font-semibold text-gray-600">カテゴリ</th>
+                            <th class="px-6 py-3 text-sm font-semibold text-gray-600"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="pbi-table-body" class="divide-y divide-gray-200">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="simulator-view" class="view-content hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">事業計画シミュレーター</h2>
+            <div class="bg-white p-8 rounded-lg shadow">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">目的</h3>
+                <p class="text-gray-700 mb-6">新規参入者が直面する最大の壁である、事業計画と資金調達を強力にサポートします。養殖方法や地域を選択するだけで、標準的なコストテンプレートに基づき、精緻な5ヶ年収支計画をシミュレーションできます。</p>
+                <h3 class="text-xl font-bold text-blue-800 mb-3">主な機能</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>養殖法・地域別の初期投資・運営コストのテンプレート機能 (PBI-002)</li>
+                    <li>リアルな売上予測と精緻な5ヶ年収支計画シミュレーション (PBI-001)</li>
+                    <li>利用可能な融資・補助金制度の自動リストアップ (PBI-004)</li>
+                    <li>金融機関向け事業計画書のドラフト自動生成 (PBI-005)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="startup-guide-view" class="view-content hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">法規制・許認可 手続きガイド</h2>
+            <div class="bg-white p-8 rounded-lg shadow">
+                 <h3 class="text-xl font-bold text-blue-800 mb-3">目的</h3>
+                <p class="text-gray-700 mb-6">複雑な法的手続きの全体像を可視化し、タスクを管理することで、スムーズな事業開始を支援します。</p>
+                <h3 class="text-xl font-bold text-blue-800 mb-3">主な機能</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>事業開始に必要な手続きのチェックリスト管理 (PBI-006)</li>
+                    <li>各ステップの概要、必要書類、相談窓口へのリンク集 (PBI-007)</li>
+                    <li>タスク進捗管理による申請漏れの防止</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="knowledge-base-view" class="view-content hidden">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">ナレッジベース</h2>
+            <div class="bg-white p-8 rounded-lg shadow">
+                 <h3 class="text-xl font-bold text-blue-800 mb-3">目的</h3>
+                <p class="text-gray-700 mb-6">技術習得を加速させ、日々の生産活動や販売戦略における課題解決を支援する知識を提供します。</p>
+                <h3 class="text-xl font-bold text-blue-800 mb-3">主な機能カテゴリ</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li><b>生産・品質管理:</b> 養殖メソッド、年間作業サイクル、環境リスク対応プレイブック、認証取得ワークフロー (PBI-008, 009, 010, 011...)</li>
+                    <li><b>販売・マーケティング:</b> 商品企画アシスタント、消費トレンドデータ、D2C・ブランディング支援 (PBI-027, 028, 029...)</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <div id="pbi-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden opacity-0">
+        <div id="pbi-modal-content" class="modal-content bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform scale-95">
+            </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- データ定義 ---
+    // PBIデータをここに構造化して定義
+    const pbiData = [
+        { id: 'PBI-001', title: '事業計画シミュレーター：5ヶ年収支計画作成機能', category: '事業計画・資金調達支援', details: { userStory: '新規参入を検討する経営者として、牡蠣養殖事業の5年間の収支見通しを具体的にシミュレーションしたい。なぜなら、事業開始の判断と資金調達計画を立てるためには、精緻な収支予測が不可欠だからだ。', acceptanceCriteria: ['初期投資額（設備・漁場・船舶等）を入力できる', '年間運営コスト（人件費・資材費・燃料費等）を項目別に入力できる', '生産量・販売価格・販売チャネルを年度別に設定できる', '5年間の売上、費用、営業利益、キャッシュフローが自動計算される', '複数シナリオ（楽観・現実・悲観）を作成・比較できる', '計算結果をグラフとテーブル形式で表示できる', 'シミュレーション結果をPDF出力できる'], subTasks: [ { name: '[バックエンド] BusinessPlan エンティティの設計・実装', size: 'S', effort: 1.5 }, { name: '[バックエンド] ProjectionCalculator サービスクラスの実装', size: 'L', effort: 8 }, { name: '[バックエンド] BusinessPlan CRUD API エンドポイントの実装', size: 'M', effort: 4 }, { name: '[バックエンド] 収支計算API エンドポイントの実装', size: 'M', effort: 4 }, { name: '[フロントエンド] BusinessSimulator ページコンポーネントの作成', size: 'M', effort: 4 }, { name: '[フロントエンド] 入力フォームコンポーネントの実装', size: 'L', effort: 8 }, { name: '[フロントエンド] 結果表示コンポーネントの実装', size: 'L', effort: 8 }, { name: '[フロントエンド] シナリオ管理機能の実装', size: 'M', effort: 4 }, { name: '[DB] BusinessPlan テーブル設計・マイグレーション', size: 'S', effort: 1.5 }, { name: '[バックエンド] BusinessPlanRepository の実装', size: 'M', effort: 4 }, { name: '[バックエンド] PDF レポート生成機能の実装', size: 'M', effort: 4 }, { name: '[テスト] ユニットテストの作成', size: 'M', effort: 4 }, { name: '[テスト] E2Eテストの作成', size: 'S', effort: 1.5 }, ] } },
+        { id: 'PBI-002', title: '事業計画シミュレーター：初期投資・運営コストのテンプレート機能（養殖法・地域別）', category: '事業計画・資金調達支援', details: { userStory: '新規参入者として、自分が選択した養殖方法と地域に応じた標準的なコストデータを自動で設定したい。なぜなら、業界の相場を知らずに現実的でない計画を立ててしまうリスクを避けるためだ。', acceptanceCriteria: ['養殖方法（垂下式、シングルシード等）を選択できる', '地域（広島、三陸、北海道等）を選択できる', '選択に応じた標準的なコストテンプレートが自動読み込みされる', 'テンプレート値を個別に調整・カスタマイズできる', '複数のテンプレートを比較表示できる', 'カスタムテンプレートを保存・再利用できる'], subTasks: [ { name: '[DB] CostTemplate テーブル設計・マイグレーション', size: 'S', effort: 1.5 }, { name: '[データ] コストテンプレートマスタデータの作成', size: 'L', effort: 8 }, { name: '[バックエンド] CostTemplate エンティティの実装', size: 'S', effort: 1.5 }, { name: '[バックエンド] テンプレート取得API の実装', size: 'M', effort: 4 }, { name: '[バックエンド] カスタムテンプレート保存API の実装', size: 'M', effort: 4 }, { name: '[フロントエンド] テンプレート選択UI の実装', size: 'M', effort: 4 }, { name: '[フロントエンド] コスト項目編集コンポーネントの実装', size: 'M', effort: 4 }, { name: '[フロントエンド] テンプレート比較表示機能の実装', size: 'M', effort: 4 }, { name: '[統合] PBI-001との連携実装', size: 'S', effort: 1.5 }, { name: '[テスト] テンプレート機能のテスト作成', size: 'M', effort: 4 }, ] } },
+        { id: 'PBI-003', title: '事業計画シミュレーター：地域別・市場価格データの連携機能', category: '事業計画・資金調達支援', details: {} },
+        { id: 'PBI-004', title: '資金調達・補助金ナビゲーター機能', category: '事業計画・資金調달支援', details: {} },
+        { id: 'PBI-005', title: '事業計画書ドラフト自動生成機能', category: '事業計画・資金調達支援', details: {} },
+        { id: 'PBI-006', title: '事業立ち上げ手続きのチェックリスト管理機能', category: '法規制・許認可 手続きガイド', details: {} },
+        { id: 'PBI-007', title: '手続きガイド：関連窓口・情報へのリンク集機能', category: '法規制・許認可 手続きガイド', details: {} },
+        { id: 'PBI-008', title: '養殖メソッド・ナレッジベース機能（標準手順・動画参照）', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-009', title: '標準年間作業サイクルのカレンダー表示機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-010', title: '環境リスク予兆アラートと対応プレイブック表示機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-011', title: 'ASC認証取得支援ワークフロー管理機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-012', title: 'HACCP衛生管理項目の記録フォーム作成', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-013', title: 'HACCP準拠の衛生管理レポート出力機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-014', title: '新規ロットの沖出し登録画面', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-015', title: 'ロット情報（生育状況）の編集機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-016', title: 'ロット一覧の検索・フィルタリング機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-017', title: '陸揚げ処理と在庫反映機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-018', title: '斃死記録と在庫反映機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-019', title: 'ロット間の移動・合算機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-020', title: 'フリップ作業の記録機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-021', title: '作業計画（陸揚げ・選別等）の登録・管理機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-022', title: '過去日付のデータ修正機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-023', title: '操作取り消し（Undo）機能の実装', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-024', title: '一括での陸揚げ計画登録機能', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-025', title: '沖出し記録画面のUI/UX改善（ボタン配置・文言変更）', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-026', title: '各種帳票の印刷レイアウト改善', category: '生産・品質管理の高度化', details: {} },
+        { id: 'PBI-027', title: '商品企画・加工品開発アシスタント機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-028', title: '消費トレンド・人気レシピ情報の表示機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-029', title: '消費者向けトレーサビリティ情報（物語・写真）の管理機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-030', title: 'トレーサビリティページ表示用のQRコード生成機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-031', title: '顧客情報（CRM）の登録・管理機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-032', title: '顧客ごとの購入履歴の記録・表示機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-033', title: 'メール配信等のための顧客リスト抽出機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-034', title: '輸出先別の要求事項チェックリスト管理機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-035', title: '海外バイヤー向けスペックシートの自動生成機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-036', title: '海外規格ラベル（サイズ等）の情報管理機能', category: '販売・マーケティング戦略支援', details: {} },
+        { id: 'PBI-037', title: '統合経営ダッシュボードの構築', category: 'データ駆動型の経営意思決定支援', details: {} },
+        { id: 'PBI-038', title: 'ダッシュボードへの外部市場価格トレンド表示', category: 'データ駆動型の経営意思決定支援', details: {} },
+        { id: 'PBI-039', title: 'ロット別原価（作業時間・資材費）の入力機能', category: 'データ駆動型の経営意思決定支援', details: {} },
+        { id: 'PBI-040', title: 'ロット別収益性分析レポート', category: 'データ駆動型の経営意思決定支援', details: {} },
+        { id: 'PBI-041', title: '販売チャネル別収益性の比較分析レポート', category: 'データ駆動型の経営意思決定支援', details: {} },
+        { id: 'PBI-042', title: '管理者向け：漁場・区画マスタ管理機能', category: 'システム基盤・運用効率化', details: {} },
+        { id: 'PBI-043', title: '管理者向け：ユーザーアカウント・権限管理機能', category: 'システム基盤・運用効率化', details: {} },
+        { id: 'PBI-044', title: '漁場図の表示パフォーマンス改善', category: 'システム基盤・運用効率化', details: {} },
+        { id: 'PBI-045', title: '漁場図からの陸揚げ操作後の画面遷移改善', category: 'システム基盤・運用効率化', details: {} },
+        { id: 'PBI-046', title: '外部連携用APIの基本設計と認証基盤', category: 'システム基盤・運用効率化', details: {} },
+        { id: 'PBI-047', title: 'API：ロット情報提供エンドポイント', category: 'システム基盤・運用効率化', details: {} },
+        { id: 'PBI-048', title: 'API：出荷実績情報提供エンドポイント', category: 'システム基盤・運用効率化', details: {} },
+        { id: 'PBI-049', title: 'API：事業計画データ連携エンドポイント', category: 'システム基盤・運用効率化', details: {} }
+    ];
+
+    const categories = [...new Set(pbiData.map(pbi => pbi.category))];
+
+    // --- DOM要素 ---
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const views = document.querySelectorAll('.view-content');
+    const pbiTableBody = document.getElementById('pbi-table-body');
+    const filterCategory = document.getElementById('filter-category');
+    const searchInput = document.getElementById('search-pbi');
+    const modal = document.getElementById('pbi-modal');
+    const modalContent = document.getElementById('pbi-modal-content');
+
+    // --- 関数定義 ---
+
+    // ビュー切り替え
+    const switchView = (viewId) => {
+        views.forEach(view => view.classList.add('hidden'));
+        document.getElementById(`${viewId}-view`).classList.remove('hidden');
+
+        sidebarLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.view === viewId) {
+                link.classList.add('active');
+            }
+        });
+    };
+
+    // PBIテーブル描画
+    const renderPbiTable = (pbis) => {
+        pbiTableBody.innerHTML = '';
+        if (pbis.length === 0) {
+            pbiTableBody.innerHTML = '<tr><td colspan="4" class="text-center py-8 text-gray-500">該当するPBIはありません。</td></tr>';
+            return;
+        }
+        pbis.forEach(pbi => {
+            const row = `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm text-gray-800">${pbi.id}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600 max-w-md truncate">${pbi.title}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${pbi.category}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button data-pbi-id="${pbi.id}" class="open-modal-btn text-sm bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700 transition-colors">詳細</button>
+                    </td>
+                </tr>
+            `;
+            pbiTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    };
+
+    // モーダル表示
+    const openModal = (pbiId) => {
+        const pbi = pbiData.find(p => p.id === pbiId);
+        if (!pbi) return;
+
+        let detailsHtml = '<p class="text-gray-600">詳細情報はありません。</p>';
+        if (pbi.details && pbi.details.userStory) {
+            const criteriaHtml = pbi.details.acceptanceCriteria.map(item => `<li class="text-gray-600">${item}</li>`).join('');
+            const subTasksHtml = pbi.details.subTasks ? pbi.details.subTasks.map(task => 
+                `<tr class="border-b">
+                    <td class="py-2 pr-4">${task.name}</td>
+                    <td class="py-2 px-4 text-center">${task.size}</td>
+                    <td class="py-2 pl-4 text-right">${task.effort} 人日</td>
+                </tr>`
+            ).join('') : '';
+
+            detailsHtml = `
+                <div class="mb-6">
+                    <h4 class="font-semibold text-lg text-gray-800 mb-2">ユーザーストーリー</h4>
+                    <p class="text-gray-600 bg-gray-50 p-3 rounded">${pbi.details.userStory}</p>
+                </div>
+                <div class="mb-6">
+                    <h4 class="font-semibold text-lg text-gray-800 mb-2">受け入れ基準</h4>
+                    <ul class="list-disc list-inside space-y-1 pl-2">${criteriaHtml}</ul>
+                </div>
+                ${pbi.details.subTasks ? `
+                <div>
+                    <h4 class="font-semibold text-lg text-gray-800 mb-2">開発サブタスク</h4>
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 pr-4 text-left font-semibold">タスク名</th>
+                                <th class="py-2 px-4 text-center font-semibold">サイズ</th>
+                                <th class="py-2 pl-4 text-right font-semibold">工数</th>
+                            </tr>
+                        </thead>
+                        <tbody>${subTasksHtml}</tbody>
+                    </table>
+                </div>
+                ` : ''}
+            `;
+        }
+        
+        modalContent.innerHTML = `
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <p class="text-sm font-semibold text-blue-600">${pbi.id}</p>
+                        <h3 class="text-2xl font-bold text-gray-900">${pbi.title}</h3>
+                        <p class="text-md text-gray-500">${pbi.category}</p>
+                    </div>
+                    <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600">&times;</button>
+                </div>
+                <div class="mt-6 border-t pt-6">${detailsHtml}</div>
+            </div>
+        `;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+        }, 10);
+
+        document.getElementById('close-modal-btn').addEventListener('click', closeModal);
+    };
+    
+    // モーダル非表示
+    const closeModal = () => {
+        modal.classList.add('opacity-0');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    };
+
+    // フィルターと検索の適用
+    const applyFilters = () => {
+        const category = filterCategory.value;
+        const searchTerm = searchInput.value.toLowerCase();
+        
+        const filteredPbis = pbiData.filter(pbi => {
+            const categoryMatch = category === 'all' || pbi.category === category;
+            const searchMatch = pbi.title.toLowerCase().includes(searchTerm);
+            return categoryMatch && searchMatch;
+        });
+        
+        renderPbiTable(filteredPbis);
+    };
+
+    // チャート描画
+    const renderCharts = () => {
+        // カテゴリ別PBI数
+        const categoryCounts = categories.map(cat => ({
+            category: cat,
+            count: pbiData.filter(pbi => pbi.category === cat).length
+        }));
+        new Chart(document.getElementById('pbiCategoryChart'), {
+            type: 'bar',
+            data: {
+                labels: categoryCounts.map(c => c.category),
+                datasets: [{
+                    label: 'PBI数',
+                    data: categoryCounts.map(c => c.count),
+                    backgroundColor: 'rgba(30, 64, 175, 0.8)',
+                    borderColor: 'rgba(30, 64, 175, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: { x: { beginAtZero: true } },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // PBI-001 工数内訳
+        const pbi001 = pbiData.find(p => p.id === 'PBI-001').details.subTasks;
+        const pbi001Effort = pbi001.reduce((acc, task) => {
+            const type = task.name.match(/\[(.*?)\]/)[1];
+            acc[type] = (acc[type] || 0) + task.effort;
+            return acc;
+        }, {});
+        new Chart(document.getElementById('pbi001EffortChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(pbi001Effort),
+                datasets: [{
+                    data: Object.values(pbi001Effort),
+                    backgroundColor: ['#3b82f6', '#10b981', '#f97316', '#8b5cf6'],
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' } } }
+        });
+
+        // PBI-002 工数内訳
+        const pbi002 = pbiData.find(p => p.id === 'PBI-002').details.subTasks;
+        const pbi002Effort = pbi002.reduce((acc, task) => {
+            const type = task.name.match(/\[(.*?)\]/)[1];
+            acc[type] = (acc[type] || 0) + task.effort;
+            return acc;
+        }, {});
+         new Chart(document.getElementById('pbi002EffortChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(pbi002Effort),
+                datasets: [{
+                    data: Object.values(pbi002Effort),
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'],
+                }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' } } }
+        });
+    };
+
+    // --- 初期化処理 ---
+    
+    // 生成日時の設定
+    document.getElementById('generation-date').textContent = new Date().toLocaleDateString('ja-JP');
+
+    // 総PBI数の表示
+    document.getElementById('total-pbi-count').textContent = pbiData.length;
+    
+    // カテゴリフィルターのオプションを生成
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        filterCategory.appendChild(option);
+    });
+
+    // PBIテーブルの初期描画
+    renderPbiTable(pbiData);
+    
+    // チャートの初期描画
+    renderCharts();
+    
+    // --- イベントリスナー設定 ---
+
+    // サイドバーナビゲーション
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView(e.target.dataset.view);
+        });
+    });
+
+    // フィルターと検索
+    filterCategory.addEventListener('change', applyFilters);
+    searchInput.addEventListener('input', applyFilters);
+    
+    // モーダル表示 (イベント委任)
+    pbiTableBody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('open-modal-btn')) {
+            openModal(e.target.dataset.pbiId);
+        }
+    });
+    
+    // モーダルを閉じる
+    modal.addEventListener('click', (e) => {
+        if (e.target.id === 'pbi-modal') {
+            closeModal();
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>

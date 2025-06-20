@@ -1,0 +1,135 @@
+/* カスタムCSSテーマ */
+@import 'default';
+
+:root {
+  --primary-color: #003366;
+  --secondary-color: #4a7a9c;
+  --background-color: #f4f7f9;
+  --text-color: #333;
+  --accent-color: #ff9900;
+  --card-bg: #ffffff;
+}
+
+section {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 40px;
+}
+
+h1 {
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--accent-color);
+  padding-bottom: 0.5rem;
+}
+
+h2 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  color: var(--secondary-color);
+  margin-top: 1.5rem;
+}
+
+strong {
+  color: var(--accent-color);
+}
+
+/* カラムレイアウト */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.columns > div {
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* タイムライン */
+.timeline {
+  position: relative;
+  padding-left: 3rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--secondary-color);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.25rem;
+  top: 0.5rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  border: 3px solid var(--secondary-color);
+}
+
+/* 引用ブロック */
+blockquote {
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-left: 5px solid var(--accent-color);
+  margin: 1.5rem 0;
+  border-radius: 4px;
+  font-style: normal;
+}
+
+/* リスト */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+/* カード風のスタイル */
+.card {
+  background-color: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin: 1rem 0;
+}
+
+/* 絵文字を大きく */
+h3:first-child {
+  font-size: 1.2em;
+}
+
+/* フッターとヘッダーのスタイル */
+header, footer {
+  color: var(--secondary-color);
+  font-size: 0.9em;
+}

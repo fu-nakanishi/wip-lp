@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牡蠣養殖事業 総合支援プラットフォーム | OYSTER COMPASS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Refined for professional SaaS look) -->
+    <!-- Application Structure Plan: The SPA is redesigned as a Landing Page (LP) for a SaaS platform named "OYSTER COMPASS". The user flow is structured to convert potential new entrants into registered users. It follows a classic LP narrative: 1. Hook (Hero section with a strong value proposition), 2. Problem (Empathizing with user's challenges), 3. Solution (Introducing platform features mapped to PBI), 4. Social Proof (Testimonials), 5. Call to Action (Pricing & Sign-up). This structure directly addresses the user's need to find a trustworthy solution for their complex business launch process. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Market Opportunity & Challenges -> Goal: Create urgency and empathy -> Viz: Problem/Solution cards (HTML/Tailwind) -> Interaction: Static -> Justification: Clearly articulates the user's pain points and positions the platform as the direct solution, based on the provided requirements document.
+        - Report Info: Platform Features (PBI items) -> Goal: Showcase tangible value -> Viz: Tabbed interface for features -> Interaction: Click tabs to switch content -> Justification: Organizes the platform's extensive features (Business Plan, Legal, Production) into digestible sections, preventing overwhelm and allowing users to explore areas of most interest.
+        - Report Info: Financial Simulation (PBI-001) -> Goal: Demonstrate the power of the core feature -> Viz: Interactive doughnut chart and financial summary -> Interaction: Select business scale to update data -> Justification: Provides a tangible, interactive demo of the platform's most critical feature, the business plan simulator, making its value immediately apparent. Library: Chart.js.
+        - Report Info: Customer Success -> Goal: Build trust and credibility -> Viz: Testimonial cards -> Interaction: Static -> Justification: Uses social proof to alleviate user hesitation and validate the platform's effectiveness.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #F8F9FA;
+            color: #343A40;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 280px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        .text-shadow-strong {
+            text-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        .active-nav {
+            color: #007BFF;
+            font-weight: 700;
+        }
+        .bg-primary { background-color: #007BFF; }
+        .text-primary { color: #007BFF; }
+        .border-primary { border-color: #007BFF; }
+        .bg-light { background-color: #F8F9FA; }
+        .bg-white { background-color: #FFFFFF; }
+        .btn-primary {
+            background-color: #007BFF;
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background-color: #6C757D;
+            color: white;
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        .feature-tab {
+            cursor: pointer;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 3px solid transparent;
+            transition: border-color 0.3s, color 0.3s;
+        }
+        .feature-tab.active {
+            border-color: #007BFF;
+            color: #007BFF;
+            font-weight: 700;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-2xl font-black text-primary">OYSTER COMPASS</div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#problem" class="nav-link hover:text-primary transition-colors duration-300">挑戦者の課題</a>
+                <a href="#features" class="nav-link hover:text-primary transition-colors duration-300">機能紹介</a>
+                <a href="#testimonials" class="nav-link hover:text-primary transition-colors duration-300">お客様の声</a>
+                <a href="#pricing" class="nav-link hover:text-primary transition-colors duration-300">料金プラン</a>
+                <a href="#pricing" class="btn-primary text-sm">無料で試す</a>
+            </div>
+             <div class="md:hidden">
+                <a href="#pricing" class="btn-primary text-sm">登録</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="text-center py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-6xl font-black text-gray-800 mb-6 text-shadow-strong leading-tight">
+                    その挑戦、<span class="text-primary">計画倒れ</span>で終わらせない。
+                </h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-600 mb-8">
+                    OYSTER COMPASSは、あなたの牡蠣養殖事業立ち上げを成功に導く、唯一無二のデジタル・コンサルタント。<br>複雑な事業計画、資金調達、許認可から生産管理まで、全工程をナビゲートします。
+                </p>
+                <a href="#pricing" class="btn-primary text-lg">まずは無料で事業計画をシミュレーション</a>
+            </div>
+        </section>
+
+        <section id="problem" class="py-16 md:py-24 bg-light">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">あなたの挑戦を阻む「4つの壁」</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-gray-600">大きな可能性を秘めた牡蠣養殖。しかし、多くの意欲ある挑戦者が事業開始を断念しています。あなたも、こんな課題に直面していませんか？</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-primary">
+                        <h3 class="font-bold text-xl text-primary">事業計画の壁</h3>
+                        <p class="mt-3 text-gray-600">信頼できる情報が少なく、現実的な収支計画が立てられない。どの補助金が使えるのかも分からない。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-primary">
+                        <h3 class="font-bold text-xl text-primary">手続きの壁</h3>
+                        <p class="mt-3 text-gray-600">漁業権の申請、法人設立、営業許可…何から手をつければ良いのか、全体像が見えず途方に暮れる。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-primary">
+                        <h3 class="font-bold text-xl text-primary">技術の壁</h3>
+                        <p class="mt-3 text-gray-600">どの養殖方法が自分に合うのか判断できない。赤潮などの環境リスクにどう対処すべきか不安だ。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-primary">
+                        <h3 class="font-bold text-xl text-primary">販売の壁</h3>
+                        <p class="mt-3 text-gray-600">生産した牡蠣をどこに、どう売れば良いのか分からない。どうすればブランドを確立できるだろうか。</p>
+                    </div>
+                </div>
+                <p class="text-center mt-12 text-xl font-bold text-gray-700">OYSTER COMPASSは、これらの壁をすべて打ち破ります。</p>
+            </div>
+        </section>
+
+        <section id="features" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">成功への全工程をナビゲートする機能</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-gray-600">事業立ち上げの羅針盤となる、OYSTER COMPASSの核心機能をご覧ください。</p>
+                </div>
+
+                <div class="flex justify-center border-b mb-8">
+                    <div id="tab-business" class="feature-tab active">事業計画</div>
+                    <div id="tab-legal" class="feature-tab">許認可</div>
+                    <div id="tab-production" class="feature-tab">生産管理</div>
+                </div>
+
+                <div id="content-business" class="feature-content">
+                    <div class="grid lg:grid-cols-2 gap-12 items-center">
+                        <div class="bg-light p-8 rounded-xl shadow-md">
+                            <h3 class="text-2xl font-bold text-primary text-center mb-4">インタラクティブ事業計画シミュレーター</h3>
+                            <p class="text-center text-gray-600 mb-6">地域と養殖方法を選ぶだけで、精緻な5ヶ年収支計画を自動作成。リスクを最小限に抑えた事業計画を、誰でも簡単に。</p>
+                            <div class="flex justify-center space-x-4 mb-6">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="scale" value="small" class="form-radio text-primary" checked>
+                                    <span>小規模 (筏2基)</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="scale" value="medium" class="form-radio text-primary">
+                                    <span>中規模 (筏5基)</span>
+                                </label>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-6 items-center">
+                                <div>
+                                    <div class="text-center">
+                                        <p class="text-sm text-gray-500">推定初期投資額</p>
+                                        <p id="investmentCost" class="text-4xl font-bold text-gray-800"></p>
+                                    </div>
+                                    <div class="text-center mt-6">
+                                        <p class="text-sm text-gray-500">3年目営業利益 (予測)</p>
+                                        <p id="profit" class="text-3xl font-bold text-primary"></p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-center font-bold text-sm mb-2">初期投資内訳</p>
+                                    <div class="chart-container" style="height: 220px;">
+                                        <canvas id="investmentChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-blue-800">資金調達・補助金ナビゲーター</h4>
+                                <p class="text-sm text-blue-700">シミュレーション結果に基づき、あなたに最適な融資制度や補助金を自動でリストアップ。事業計画書のドラフトも自動生成します。</p>
+                            </div>
+                        </div>
+                        <div class="order-first lg:order-last">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">もう、資金計画で悩みません。</h3>
+                            <p class="text-gray-600 mb-4">これまでブラックボックスだった牡蠣養殖のコスト構造を完全に可視化。リアルな市場データに基づいた売上予測と組み合わせることで、銀行や投資家も納得する精度の高い事業計画書を作成できます。</p>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><span class="text-primary font-bold mr-2">✔</span><span>地域・養殖法別のコストテンプレート</span></li>
+                                <li class="flex items-start"><span class="text-primary font-bold mr-2">✔</span><span>リアルタイム市場価格を反映した売上予測</span></li>
+                                <li class="flex items-start"><span class="text-primary font-bold mr-2">✔</span><span>最適な補助金・融資制度の自動提案</span></li>
+                                <li class="flex items-start"><span class="text-primary font-bold mr-2">✔</span><span>提出用事業計画書のドラフト自動生成</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-legal" class="feature-content hidden">
+                    <div class="text-center max-w-4xl mx-auto">
+                         <h3 class="text-2xl font-bold text-gray-800 mb-4">煩雑な手続きは、チェックリストで完遂。</h3>
+                         <p class="text-gray-600 mb-8">事業開始までの複雑な許認可プロセスを、タスク管理ワークフローで完全ナビゲート。何を、いつまでに、どこへ提出すれば良いのかが一目瞭然。申請漏れのリスクはもうありません。</p>
+                         <div class="bg-light p-8 rounded-xl shadow-inner">
+                            <h4 class="font-bold text-xl text-primary mb-4">立ち上げタスク管理ワークフロー</h4>
+                             <div class="grid md:grid-cols-3 gap-6 text-left">
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <p class="font-bold">✅ 漁業権の申請</p>
+                                    <p class="text-sm text-gray-500 mt-1">必要書類リスト、地域の漁協連絡先へのリンク</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg shadow">
+                                    <p class="font-bold">✅ 法人設立手続き</p>
+                                    <p class="text-sm text-gray-500 mt-1">定款作成ガイド、法務局へのオンライン申請</p>
+                                </div>
+                                 <div class="bg-white p-4 rounded-lg shadow">
+                                    <p class="font-bold">⬜ 営業許可の取得 (食品衛生法)</p>
+                                    <p class="text-sm text-gray-500 mt-1">管轄保健所の検索、HACCP計画のテンプレート</p>
+                                </div>
+                             </div>
+                         </div>
+                    </div>
+                </div>
+
+                <div id="content-production" class="feature-content hidden">
+                    <div class="text-center max-w-4xl mx-auto">
+                         <h3 class="text-2xl font-bold text-gray-800 mb-4">あなたのデジタル養殖技術顧問。</h3>
+                         <p class="text-gray-600 mb-8">最適な養殖メソッドの選定から、日々の生産性向上、国際認証の取得まで。データとナレッジで、高品質・高収益な生産体制の構築を支援します。</p>
+                         <div class="grid md:grid-cols-2 gap-8 text-left">
+                             <div class="bg-light p-6 rounded-xl shadow-inner">
+                                <h4 class="font-bold text-lg text-primary mb-2">養殖メソッド・ナレッジベース</h4>
+                                <p class="text-sm text-gray-600">選択した養殖法の標準作業サイクルをカレンダーに表示。先進事例の動画マニュアルで、いつでも技術を学べます。</p>
+                            </div>
+                            <div class="bg-light p-6 rounded-xl shadow-inner">
+                                <h4 class="font-bold text-lg text-primary mb-2">環境リスク対応プレイブック</h4>
+                                <p class="text-sm text-gray-600">水温や塩分濃度などのデータが危険域に達すると自動でアラート。推奨される対応策をチェックリストで提示し、被害を未然に防ぎます。</p>
+                            </div>
+                             <div class="bg-light p-6 rounded-xl shadow-inner md:col-span-2">
+                                <h4 class="font-bold text-lg text-primary mb-2">ASC認証取得支援ワークフロー</h4>
+                                <p class="text-sm text-gray-600">日々の作業記録が、国際認証取得に必要な証拠として自動で整理されます。持続可能な養殖への取り組みをシステムが後押しし、世界に通用するブランド価値を構築します。</p>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="py-16 md:py-24 bg-light">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">導入事例・お客様の声</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-gray-600">OYSTER COMPASSは、既に多くの挑戦者の夢を実現しています。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <p class="text-gray-600 mb-4">"自己資金だけでは無理だと諦めかけていましたが、シミュレーターで最適な補助金を見つけ、銀行も納得する事業計画書が作れました。まさに事業開始の羅針盤です。"</p>
+                        <div class="font-bold text-gray-800">- Aさん (34歳・元ITエンジニア)</div>
+                        <div class="text-sm text-gray-500">宮城県石巻市で新規就業</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <p class="text-gray-600 mb-4">"Uターンで家業を継ぎましたが、昔ながらのやり方に限界を感じていました。データに基づいた生産管理と、ASC認証取得支援機能のおかげで、海外バイヤーとの取引が始まりました。"</p>
+                        <div class="font-bold text-gray-800">- B水産様 (2代目経営者)</div>
+                        <div class="text-sm text-gray-500">広島県呉市</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="pricing" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">さあ、あなたの挑戦を始めよう</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-600">まずは無料で、あなたの事業の可能性をシミュレーションしてみませんか？</p>
+                </div>
+                <div class="max-w-md mx-auto bg-light p-8 rounded-xl shadow-2xl border-t-4 border-primary">
+                    <h3 class="text-2xl font-bold text-center text-primary">スタートアッププラン</h3>
+                    <p class="text-center text-5xl font-black my-4">無料</p>
+                    <ul class="space-y-3 mb-8">
+                       <li class="flex items-center"><span class="text-green-500 font-bold mr-2">✔</span><span>事業計画シミュレーター（簡易版）</span></li>
+                       <li class="flex items-center"><span class="text-green-500 font-bold mr-2">✔</span><span>立ち上げタスク管理ワークフロー</span></li>
+                       <li class="flex items-center"><span class="text-green-500 font-bold mr-2">✔</span><span>養殖メソッド・ナレッジベース（一部）</span></li>
+                    </ul>
+                    <a href="#" class="block w-full text-center btn-primary text-lg">今すぐ無料で始める</a>
+                     <p class="text-xs text-center text-gray-500 mt-4">※全ての機能を利用できるプロプラン（月額制）もご用意しています。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-8">
+        <div class="container mx-auto px-6">
+            <p class="font-bold text-lg">OYSTER COMPASS</p>
+            <p class="text-sm opacity-70 mt-2">&copy; 2025 OYSTER COMPASS Inc. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Feature Tabs Logic
+        const tabs = document.querySelectorAll('.feature-tab');
+        const contents = document.querySelectorAll('.feature-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(item => item.classList.remove('active'));
+                tab.classList.add('active');
+
+                const targetId = tab.id.replace('tab-', 'content-');
+                contents.forEach(content => {
+                    if (content.id === targetId) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Financial Simulator Logic
+        const financialData = {
+            small: {
+                investment: 4900000,
+                profit: 1850000,
+                breakdown: {
+                    labels: ['漁船・機材', '養殖施設', '許認可・加入金', '初期運転資金'],
+                    data: [2200000, 1000000, 700000, 1000000]
+                }
+            },
+            medium: {
+                investment: 12500000,
+                profit: 4800000,
+                breakdown: {
+                    labels: ['漁船・機材', '養殖施設', '許認可・加入金', '初期運転資金'],
+                    data: [4500000, 4000000, 1500000, 2500000]
+                }
+            }
+        };
+
+        const investmentChartCtx = document.getElementById('investmentChart').getContext('2d');
+        let investmentChart = new Chart(investmentChartCtx, {
+            type: 'doughnut',
+            data: {
+                labels: financialData.small.breakdown.labels,
+                datasets: [{
+                    data: financialData.small.breakdown.data,
+                    backgroundColor: ['#007BFF', '#50A7FF', '#89C5FF', '#C2E0FF'],
+                    hoverOffset: 4,
+                    borderColor: '#f8f9fa',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw;
+                                return `${label}: ${value.toLocaleString()}円`;
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        function updateFinancials(scale) {
+            const data = financialData[scale];
+            document.getElementById('investmentCost').textContent = `${(data.investment / 10000).toLocaleString()}万円`;
+            document.getElementById('profit').textContent = `約 ${(data.profit / 10000).toLocaleString()}万円`;
+
+            investmentChart.data.datasets[0].data = data.breakdown.data;
+            investmentChart.update();
+        }
+
+        document.querySelectorAll('input[name="scale"]').forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                updateFinancials(event.target.value);
+            });
+        });
+        updateFinancials('small');
+        
+        // Active Nav on Scroll Logic
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('main section');
+        const headerOffset = 80;
+
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.pageYOffset;
+            let activeSectionId = '';
+            
+            if (scrollPosition < sections[0].offsetTop - headerOffset) {
+                 navLinks.forEach(link => link.classList.remove('active-nav'));
+                 return;
+            }
+
+            sections.forEach(section => {
+                if (scrollPosition >= section.offsetTop - headerOffset) {
+                    activeSectionId = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active-nav');
+                if (link.getAttribute('href') === '#' + activeSectionId) {
+                    link.classList.add('active-nav');
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>

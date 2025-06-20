@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インタラクティブな牡蠣養殖事業ガイド</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The SPA is designed as a user-centric journey for a potential new entrant, rather than mirroring the formal report structure. It flows from "Why" (The Opportunity), to "Who" (The People), to "How" (The Business), and finally "What's Next" (The Support). This narrative path is more intuitive for someone exploring the possibility of starting a business. The core interactive element is the "Investment & Profit" calculator in "The Business" section. This directly addresses a primary user question in a personalized way, making the data actionable and understandable. Navigation is handled by a smooth-scrolling header, guiding the user through this story. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Market Production vs. Consumption -> Goal: Inform of market stability -> Viz: Bar Chart -> Interaction: Hover for details -> Justification: Visually highlights the consistent demand gap, creating a compelling business case -> Library: Chart.js.
+        - Report Info: New Entrant Profiles -> Goal: Humanize the data and create empathy -> Viz: Persona Cards (HTML/Tailwind) -> Interaction: Static Display -> Justification: Makes the prospect of starting feel more achievable by showcasing relatable success stories -> Library/Method: HTML/CSS.
+        - Report Info: Initial Costs & Profitability -> Goal: Provide personalized financial estimates -> Viz: Dynamic Donut Chart & Text -> Interaction: User selects business scale via radio buttons -> Justification: Transforms static financial data into a practical, interactive tool for planning -> Library: Chart.js.
+        - Report Info: Support Business P&L -> Goal: Demonstrate the viability of support systems -> Viz: Grouped Bar Chart -> Interaction: Hover for details -> Justification: Clearly visualizes the projected 3-year financial growth of a support business, reinforcing the industry's potential -> Library: Chart.js.
+        - Report Info: Path to Independence -> Goal: Clarify the process -> Viz: Step-by-step diagram -> Interaction: Static Display -> Justification: Breaks down a complex process into simple, digestible steps -> Library/Method: HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #FDFBF8;
+            color: #3C4858;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .active-nav {
+            color: #E68A6E;
+            font-weight: 700;
+        }
+        .bg-sea-mist { background-color: #F0F4F8; }
+        .bg-warm-sand { background-color: #FDFBF8; }
+        .text-deep-ocean { color: #005A7A; }
+        .accent-coral { background-color: #E68A6E; color: white; }
+        .border-coral { border-color: #E68A6E; }
+        .text-coral { color: #E68A6E; }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-warm-sand">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-xl font-bold text-deep-ocean">牡蠣養殖ナビ</div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#opportunity" class="nav-link hover:text-coral transition-colors duration-300">市場の可能性</a>
+                <a href="#people" class="nav-link hover:text-coral transition-colors duration-300">挑戦者たち</a>
+                <a href="#business" class="nav-link hover:text-coral transition-colors duration-300">事業の現実</a>
+                <a href="#support" class="nav-link hover:text-coral transition-colors duration-300">支援の未来</a>
+            </div>
+            <div class="md:hidden">
+                <select id="mobile-nav" class="bg-white border border-gray-300 rounded-md p-2 text-deep-ocean">
+                    <option value="#home">メニュー</option>
+                    <option value="#opportunity">市場の可能性</option>
+                    <option value="#people">挑戦者たち</option>
+                    <option value="#business">事業の現実</option>
+                    <option value="#support">支援の未来</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="text-center py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-6xl font-bold text-deep-ocean mb-4 text-shadow">牡蠣養殖、<br class="md:hidden">その可能性に挑戦する。</h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-600">
+                    日本の食文化を支える牡蠣養殖。それは、ただの産業ではなく、新しい生き方を選ぶための選択肢です。<br>安定した需要、地域への貢献、そして自然との共存。このガイドで、あなたの未来を探求しましょう。
+                </p>
+            </div>
+        </section>
+
+        <section id="opportunity" class="py-16 md:py-24 bg-sea-mist">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-deep-ocean">1. 市場の可能性：なぜ今、牡蠣養殖なのか？</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-600">日本の牡蠣市場は、国内生産量を上回る安定した需要があります。これは、新規参入者にとって大きなチャンスを意味します。データからそのポテンシャルを読み解きましょう。</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-bold text-xl mb-4 text-deep-ocean">国内の生産量 vs 消費量</h3>
+                        <div class="chart-container">
+                            <canvas id="marketChart"></canvas>
+                        </div>
+                        <p class="text-sm mt-4 text-gray-500">国内消費量は常に生産量を上回っており、この差は輸入で補われています。高品質な国産牡蠣には安定した市場が存在することを示唆しています。</p>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h4 class="font-bold text-lg text-deep-ocean">国内市場規模 (TAM)</h4>
+                            <p class="text-3xl font-bold text-coral mt-2">約 500億円</p>
+                            <p class="text-sm text-gray-500 mt-1">品質やブランド力次第で、大きなシェアを獲得できる可能性があります。</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h4 class="font-bold text-lg text-deep-ocean">主要生産地 (2023年 生産量)</h4>
+                            <ul class="space-y-2 mt-2">
+                                <li class="flex justify-between"><span>広島県</span> <span class="font-bold">61%</span></li>
+                                <li class="flex justify-between"><span>宮城県</span> <span class="font-bold">14%</span></li>
+                                <li class="flex justify-between"><span>岡山県</span> <span class="font-bold">8%</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="people" class="py-16 md:py-24 bg-warm-sand">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-deep-ocean">2. 挑戦者たち：どんな人が始めている？</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-600">牡蠣養殖の世界に飛び込んでいるのは、漁業一家の出身者だけではありません。多様な背景を持つ人々が、それぞれの想いを胸に新たなキャリアを築いています。</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl text-deep-ocean">Uターン・Iターン移住者</h3>
+                            <p class="mt-2 text-gray-600">都市部での生活から一転、自然豊かな地方で新たなキャリアをスタート。「好きな海産物だから」「家族との時間を大切にしたい」といった想いが、大きな決断を後押ししています。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl text-deep-ocean">若者・女性の活躍</h3>
+                            <p class="mt-2 text-gray-600">20代〜30代の若者や女性が、新たな担い手として注目されています。SNSでの発信や6次産業化など、新しい感性を活かした経営で、業界に新風を吹き込んでいます。</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 md:col-span-2 lg:col-span-1">
+                        <div class="p-6">
+                            <h3 class="font-bold text-xl text-deep-ocean">地域貢献を目指す起業家</h3>
+                            <p class="mt-2 text-gray-600">「故郷の島を元気にしたい」という情熱から事業を開始するケースも。高品質な牡蠣でブランドを築き、地域経済の活性化や、環境保全に貢献する循環型モデルを構築しています。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="business" class="py-16 md:py-24 bg-sea-mist">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-deep-ocean">3. 事業の現実：知っておくべきこと</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-600">情熱だけでは事業は成り立ちません。独立までの道のり、必要な投資と見込める収益、そして成功の鍵を握る養殖方法について、具体的な数字と情報で理解を深めましょう。</p>
+                </div>
+
+                <div class="bg-white p-8 rounded-xl shadow-md mb-12">
+                    <h3 class="text-2xl font-bold text-deep-ocean text-center mb-6">独立へのロードマップ</h3>
+                    <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="text-center p-4">
+                            <div class="text-3xl font-bold text-coral">1</div>
+                            <div class="font-bold mt-1">経験を積む</div>
+                            <p class="text-sm text-gray-500">既存の漁師の下で技術を学ぶ</p>
+                        </div>
+                        <div class="text-2xl text-gray-300 hidden md:block">&rarr;</div>
+                        <div class="text-xl text-gray-300 md:hidden">&darr;</div>
+                        <div class="text-center p-4">
+                             <div class="text-3xl font-bold text-coral">2</div>
+                            <div class="font-bold mt-1">資格取得</div>
+                            <p class="text-sm text-gray-500">船舶免許・無線技士など</p>
+                        </div>
+                         <div class="text-2xl text-gray-300 hidden md:block">&rarr;</div>
+                        <div class="text-xl text-gray-300 md:hidden">&darr;</div>
+                        <div class="text-center p-4">
+                             <div class="text-3xl font-bold text-coral">3</div>
+                            <div class="font-bold mt-1">漁協へ加入</div>
+                            <p class="text-sm text-gray-500">地域での漁業に必須</p>
+                        </div>
+                         <div class="text-2xl text-gray-300 hidden md:block">&rarr;</div>
+                         <div class="text-xl text-gray-300 md:hidden">&darr;</div>
+                        <div class="text-center p-4">
+                           <div class="text-3xl font-bold text-coral">4</div>
+                            <div class="font-bold mt-1">事業開始</div>
+                            <p class="text-sm text-gray-500">漁業権を取得し独立</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="bg-white p-8 rounded-xl shadow-md">
+                        <h3 class="text-2xl font-bold text-deep-ocean text-center mb-6">投資と収益シミュレーション</h3>
+                        <p class="text-center text-gray-600 mb-6">事業規模を選択して、初期投資の内訳と、3年養殖モデルでの年間粗利益の目安を確認しましょう。</p>
+                        <div class="flex justify-center space-x-4 mb-6">
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="scale" value="small" class="form-radio text-coral" checked>
+                                <span>小規模</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="radio" name="scale" value="medium" class="form-radio text-coral">
+                                <span>中規模</span>
+                            </label>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-6 items-center">
+                            <div>
+                                <div class="text-center">
+                                    <p class="text-sm text-gray-500">初期投資額 (目安)</p>
+                                    <p id="investmentCost" class="text-4xl font-bold text-deep-ocean"></p>
+                                </div>
+                                <div class="text-center mt-6">
+                                    <p class="text-sm text-gray-500">年間粗利益 (目安)</p>
+                                    <p id="profit" class="text-3xl font-bold text-coral"></p>
+                                    <p class="text-xs text-gray-400">※3年養殖モデル。自家労働費等含まず。</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="investmentChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-md">
+                         <h3 class="text-2xl font-bold text-deep-ocean text-center mb-6">成功の鍵：養殖方法の選択</h3>
+                         <div class="grid grid-cols-2 gap-4 text-center">
+                            <div>
+                                <h4 class="font-bold text-lg text-deep-ocean">伝統的筏垂下方式</h4>
+                                <ul class="text-sm text-gray-600 mt-4 space-y-2">
+                                    <li><span class="text-green-500">✔</span> 大量生産向き</li>
+                                    <li><span class="text-green-500">✔</span> 確立された技術</li>
+                                    <li><span class="text-red-500">✘</span> 殻の形が不揃い</li>
+                                    <li><span class="text-red-500">✘</span> 過密による成長不良も</li>
+                                </ul>
+                            </div>
+                             <div>
+                                <h4 class="font-bold text-lg text-deep-ocean">シングルシード方式</h4>
+                                <ul class="text-sm text-gray-600 mt-4 space-y-2">
+                                    <li><span class="text-green-500">✔</span> 高品質・高単価</li>
+                                    <li><span class="text-green-500">✔</span> 殻の形が美しい</li>
+                                    <li><span class="text-red-500">✘</span> 手間がかかる</li>
+                                    <li><span class="text-red-500">✘</span> 専用資材・技術が必要</li>
+                                </ul>
+                            </div>
+                         </div>
+                         <p class="mt-6 text-sm text-gray-500">新規参入者は、小規模からでも高付加価値を狙える「シングルシード方式」が有効な戦略となる可能性があります。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="support" class="py-16 md:py-24 bg-warm-sand">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-deep-ocean">4. 支援の未来：一人で悩まないために</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-gray-600">新規参入者が直面する課題は少なくありません。そこで、専門的な支援サービスの需要が高まっています。ここでは、参入者を支える事業モデルとその成長可能性を見ていきます。</p>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="grid lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-2">
+                            <h3 class="text-2xl font-bold text-deep-ocean mb-4">支援事業「オイスター・フューチャーズ」</h3>
+                            <p class="text-gray-600 mb-4">牡蠣養殖の参入希望者に対し、事業計画から技術指導、販路開拓までをワンストップで支援するコンサルティング事業のモデルです。</p>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="text-coral font-bold mr-2">✔</span>
+                                    <span><strong class="font-bold">事業計画策定：</strong>財務予測やリスク評価を含む計画書作成を支援。</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-coral font-bold mr-2">✔</span>
+                                    <span><strong class="font-bold">技術・資金調達：</strong>最適な養殖方法の選定や、補助金・融資の申請をサポート。</span>
+                                </li>
+                                 <li class="flex items-start">
+                                    <span class="text-coral font-bold mr-2">✔</span>
+                                    <span><strong class="font-bold">販路・マーケティング：</strong>ブランド戦略や販売チャネルの開拓を後押し。</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="lg:col-span-3">
+                            <h4 class="text-xl font-bold text-deep-ocean text-center mb-4">3カ年損益計算書（P&L）予測</h4>
+                            <div class="chart-container">
+                                <canvas id="supportBizChart"></canvas>
+                            </div>
+                            <p class="text-sm mt-4 text-gray-500 text-center">初年度から黒字化し、3年目には安定した利益を見込む成長モデル。新規参入者の成功が、支援事業自体の成長にも繋がります。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-deep-ocean text-white text-center py-8">
+        <div class="container mx-auto px-6">
+            <p>日本の豊かな食文化を、未来へ。牡蠣養殖への挑戦を応援します。</p>
+            <p class="text-sm opacity-70 mt-2">このページは「日本の牡蠣養殖事業：新規参入の動向と事業支援の可能性」レポートに基づき作成されました。</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const marketChartCtx = document.getElementById('marketChart').getContext('2d');
+            new Chart(marketChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['近年平均'],
+                    datasets: [{
+                        label: '国内生産量 (トン)',
+                        data: [165000],
+                        backgroundColor: 'rgba(0, 90, 122, 0.6)',
+                        borderColor: 'rgba(0, 90, 122, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: '国内消費量 (トン)',
+                        data: [172000],
+                        backgroundColor: 'rgba(230, 138, 110, 0.6)',
+                        borderColor: 'rgba(230, 138, 110, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toLocaleString()} トン`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return (value / 1000) + 'k';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const financialData = {
+                small: {
+                    investment: 4900000,
+                    profit: 640000,
+                    breakdown: {
+                        labels: ['漁船・船外機', '養殖筏・施設', '漁協出資金', 'その他'],
+                        data: [1800000, 1000000, 500000, 1600000]
+                    }
+                },
+                medium: {
+                    investment: 8650000,
+                    profit: 1100000, 
+                    breakdown: {
+                        labels: ['漁船・船外機', '養殖筏・施設', '漁協出資金', 'その他'],
+                        data: [3500000, 2100000, 1000000, 2050000]
+                    }
+                }
+            };
+            
+            const investmentChartCtx = document.getElementById('investmentChart').getContext('2d');
+            let investmentChart = new Chart(investmentChartCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: financialData.small.breakdown.labels,
+                    datasets: [{
+                        label: '初期投資内訳',
+                        data: financialData.small.breakdown.data,
+                        backgroundColor: ['#005A7A', '#5C9EAD', '#E68A6E', '#F3B5A5'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw;
+                                    const total = context.chart.getDatasetMeta(0).total;
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value.toLocaleString()}円 (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            function updateFinancials(scale) {
+                const data = financialData[scale];
+                document.getElementById('investmentCost').textContent = `${(data.investment / 10000).toLocaleString()}万円`;
+                document.getElementById('profit').textContent = `約 ${(data.profit / 10000).toLocaleString()}万円`;
+                
+                investmentChart.data.labels = data.breakdown.labels;
+                investmentChart.data.datasets[0].data = data.breakdown.data;
+                investmentChart.update();
+            }
+            
+            document.querySelectorAll('input[name="scale"]').forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    updateFinancials(event.target.value);
+                });
+            });
+            updateFinancials('small');
+
+
+            const supportBizChartCtx = document.getElementById('supportBizChart').getContext('2d');
+            new Chart(supportBizChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['1年目', '2年目', '3年目'],
+                    datasets: [
+                        {
+                            label: '収益合計',
+                            data: [7600, 19300, 31600],
+                            backgroundColor: 'rgba(0, 90, 122, 0.7)',
+                        },
+                        {
+                            label: '営業経費合計',
+                            data: [7000, 11100, 15600],
+                            backgroundColor: 'rgba(230, 138, 110, 0.7)',
+                        },
+                         {
+                            label: '当期純利益',
+                            data: [280, 5425, 10710],
+                            backgroundColor: 'rgba(92, 158, 173, 0.7)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${(context.raw / 1000).toFixed(1)}百万円`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return `${(value / 1000)}M`;
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '金額 (千円)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.pageYOffset;
+                const windowHeight = window.innerHeight;
+                const bodyHeight = document.body.offsetHeight;
+                const headerOffset = 70; 
+
+                let activeSectionId = '';
+
+                if (scrollPosition + windowHeight >= bodyHeight - 2) {
+                    activeSectionId = sections[sections.length - 1].id;
+                } else {
+                    for (let i = sections.length - 1; i >= 0; i--) {
+                        const section = sections[i];
+                        if (scrollPosition >= section.offsetTop - headerOffset) {
+                            activeSectionId = section.id;
+                            break;
+                        }
+                    }
+                }
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active-nav');
+                    if (link.getAttribute('href') === '#' + activeSectionId) {
+                        link.classList.add('active-nav');
+                    }
+                });
+            });
+
+
+            const mobileNav = document.getElementById('mobile-nav');
+            mobileNav.addEventListener('change', () => {
+                const target = mobileNav.value;
+                if(target){
+                    document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAGパートナーシップ 顧客共創セッション</title>
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #4a7a9c;
+            --background-color: #f4f7f9;
+            --text-color: #333;
+            --header-text-color: #ffffff;
+            --card-bg-color: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-color: #ff9900;
+            --warning-color-light: #fcf8e3;
+            --warning-color-dark: #a94442;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: var(--header-text-color);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-color);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.1em;
+        }
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav button {
+            background-color: transparent;
+            border: 1px solid var(--header-text-color);
+            color: var(--header-text-color);
+            padding: 10px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav button.active, nav button:hover {
+            background-color: var(--header-text-color);
+            color: var(--secondary-color);
+        }
+        .section {
+            display: none;
+            padding: 30px 20px;
+            background-color: var(--card-bg-color);
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .section.active {
+            display: block;
+        }
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #fdfdfd;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+        .card h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            font-size: 1em;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--secondary-color);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            border: 2px solid var(--secondary-color);
+        }
+        .timeline-item h4 {
+            margin: 0 0 5px 0;
+            color: var(--primary-color);
+        }
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: block;
+            margin: 20px auto 0;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #e68a00;
+        }
+        .lean-canvas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .lean-canvas .card {
+            min-height: 150px;
+        }
+        .story-map {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+        .story-column {
+            flex: 0 0 250px;
+            background-color: #f0f4f7;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .story-column h4 {
+            text-align: center;
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .story-card {
+            background-color: white;
+            padding: 8px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        /* Tetris Specific Styles */
+        .tetris-container {
+            display: flex;
+            gap: 20px;
+            /* [MODIFIED] Align to the left */
+            justify-content: flex-start; 
+            align-items: flex-start;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        #tetris-canvas {
+            border: 2px solid var(--primary-color);
+            background-color: #e9f2f9;
+        }
+        .tetris-info {
+            min-width: 220px; /* Increased width to accommodate new info */
+            text-align: left;
+        }
+        .tetris-info h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        .tetris-info-score {
+            background-color: #e9f2f9;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 15px;
+        }
+        #tetris-controls {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        #tetris-controls p {
+           padding: 0;
+           margin: 5px 0;
+           background-color: transparent;
+           font-size: 1em;
+           text-align: left;
+        }
+        #game-over-message {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 2000;
+        }
+        #debt-impact {
+            margin-top: 20px;
+            background-color: var(--warning-color-light);
+            border-left: 4px solid var(--warning-color-dark);
+            display: none;
+        }
+        #debt-impact h4 {
+            margin-top: 0;
+            color: var(--warning-color-dark);
+        }
+        #debt-impact ul {
+            padding-left: 20px;
+            margin: 0;
+            list-style-type: none;
+        }
+        #debt-impact li {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            padding-left: 1.2em;
+            position: relative;
+        }
+        #debt-impact li::before {
+             content: '⚠️';
+             position: absolute;
+             left: 0;
+             top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>KAGパートナーシップ 顧客共創セッション</h1>
+        <p>貴社の「デジタル自律」に向けた未来を共に描く</p>
+    </header>
+
+    <nav id="nav-bar">
+        <button onclick="showSection('intro')" class="active">1. はじめに</button>
+        <button onclick="showSection('diagnosis')">2. 現状の再確認</button>
+        <button onclick="showSection('hidden-costs')">3. 見えないコスト</button>
+        <button onclick="showSection('vision')">4. 未来像の共創</button>
+        <button onclick="showSection('journey')">5. 共に歩む道筋</button>
+        <button onclick="showSection('next-steps')">6. 次のステップ</button>
+    </nav>
+
+    <div class="container">
+        <!-- Other sections remain unchanged -->
+        <div id="intro" class="section active">
+            <h2>1. はじめに：本日のセッションの目的</h2>
+            <p>本日は貴重なお時間をいただき、誠にありがとうございます。</p>
+            <p>このセッションは、私たちが何かを一方的にご提案する場ではございません。貴社がLPで共感いただいた「デジタル自律モデル」という未来像を、貴社ならではの形で実現するために、<strong>現状の課題を共有し、理想の姿を共に描き出す</strong>ための協業の時間です。</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Before：外部依存モデル</h3>
+                    <ul>
+                        <li>硬直的な開発：仕様変更に数ヶ月</li>
+                        <li>高コスト体質：外部委託費が利益を圧迫</li>
+                        <li>ノウハウの流出：業務知識・技術が社内に残らない</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>After：デジタル自律モデル</h3>
+                    <ul>
+                        <li>俊敏な価値創出：数週間単位のリリース</li>
+                        <li>コスト構造の変革：内製チームが資産化</li>
+                        <li>持続可能な成長：自社チームでイノベーション</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="margin-top: 20px;">この「Before」から「After」への変革の旅を、どのようにすれば実現できるか、一緒に考えていきたいと思います。</p>
+        </div>
+
+        <div id="diagnosis" class="section">
+            <h2>2. 現状の再確認：貴社の「今」を言語化する</h2>
+            <p>LPで描かれていた課題について、貴社の具体的な状況をお聞かせいただけますでしょうか。皆様の言葉で語っていただくことで、課題の本質がより明確になります。</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>プロセスとスピード</h3>
+                    <p>「仕様変更に数ヶ月」という点について、具体的なエピソードはありますか？</p>
+                    <textarea id="diag-process" rows="4" placeholder="例：顧客からの要望でボタンの色を変えるだけなのに、見積もりと承認で2ヶ月かかった…"></textarea>
+                </div>
+                <div class="card">
+                    <h3>コストと予算</h3>
+                    <p>「外部委託費が利益を圧迫」という感覚はありますか？保守費用など、見えにくいコストはございませんか？</p>
+                    <textarea id="diag-cost" rows="4" placeholder="例：年間予算の半分以上が既存システムの維持に使われている…"></textarea>
+                </div>
+                <div class="card">
+                    <h3>知識とケイパビリティ</h3>
+                    <p>「ノウハウの流出」について、特定のベンダーに依存していると感じる部分はありますか？</p>
+                    <textarea id="diag-knowledge" rows="4" placeholder="例：システムの仕様はA社のBさんしか知らず、彼が異動したらどうなるか不安だ…"></textarea>
+                </div>
+                <div class="card">
+                    <h3>リスクとガバナンス</h3>
+                    <p>外部委託に起因する、セキュリティや障害発生時の対応など、懸念点はありますか？</p>
+                    <textarea id="diag-risk" rows="4" placeholder="例：本番障害が起きても、原因究明に時間がかかり、顧客に迷惑をかけてしまった…"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="hidden-costs" class="section">
+            <h2>3. 見えないコストの正体：技術的負債というビジネス課題</h2>
+            <p>先ほどお伺いした個別の課題は、実は根っこで繋がっています。私たちはこれを<strong>「技術的負債」</strong>と呼んでいます。これは単なる技術の問題ではなく、気づかないうちにビジネスの成長を阻害し、機会損失という「利子」を払い続ける、経営レベルの課題です。</p>
+            <p><strong>技術的負債を体感してみましょう。</strong>最初は綺麗にブロックを消せていても、場当たり的に（＝戦略なく）積み上げていくと、次第に消せないデッドスペース（=負債）が溜まり、身動きが取れなくなります。これがビジネスの現場で起きていることです。</p>
+            
+            <div class="tetris-container">
+                <canvas id="tetris-canvas" width="300" height="600"></canvas>
+                <div class="tetris-info">
+                    <h3>スコア</h3>
+                    <p id="score" class="tetris-info-score">0</p>
+                    
+                    <div id="debt-impact" class="card">
+                        <h4>貴社における「技術的負債」の影響</h4>
+                        <ul id="debt-list">
+                            <li id="debt-item-1">機会損失：市場の変化に迅速に対応できず、競合に先を越される。</li>
+                            <li id="debt-item-2">イノベーションの停滞：新しいアイデアを試すための開発リソースが確保できない。</li>
+                            <li id="debt-item-3">従業員の士気低下：改善提案が通らず、優秀な人材が離職するリスク。</li>
+                            <li id="debt-item-4">顧客満足度の低下：システムの不具合や使いにくさが、顧客離れを引き起こす。</li>
+                        </ul>
+                    </div>
+
+                    <h3>操作方法</h3>
+                    <div id="tetris-controls" class="card">
+                        <p><strong>← →</strong> : 移動</p>
+                        <p><strong>↑</strong> : 回転</p>
+                        <p><strong>↓</strong> : ソフトドロップ</p>
+                        <p><strong>スペース</strong> : ハードドロップ</p>
+                        <p><strong>P</strong> : 一時停止</p>
+                    </div>
+                     <button class="btn-primary" id="start-button">ゲーム開始</button>
+                </div>
+            </div>
+             <div id="game-over-message">
+                <h2>GAME OVER</h2>
+                <p>負債が積み重なり、<br>新しい挑戦ができなくなりました。</p>
+            </div>
+        </div>
+
+        <div id="vision" class="section">
+            <h2>4. 未来像の共創：理想のビジネスをデザインする</h2>
+            <p>では、視点を変えて、これらの制約から解放された「理想の未来」を一緒に描いてみましょう。ここでは、リーンキャンバスというフレームワークを使って、ビジネスの全体像を整理します。</p>
+            <div class="lean-canvas">
+                <div class="card">
+                    <h3>1. 顧客の課題</h3>
+                    <textarea id="lc-problem" rows="5" placeholder="顧客が本当に解決したい課題は？"></textarea>
+                </div>
+                <div class="card">
+                    <h3>2. 独自の価値提案</h3>
+                    <textarea id="lc-uvp" rows="5" placeholder="他社にはない、シンプルで明確な約束は？"></textarea>
+                </div>
+                <div class="card">
+                    <h3>3. ソリューション</h3>
+                    <textarea id="lc-solution" rows="5" placeholder="課題を解決する具体的な方法は？"></textarea>
+                </div>
+                <div class="card">
+                    <h3>4. 主要指標</h3>
+                    <textarea id="lc-metrics" rows="5" placeholder="成功をどう測定するか？"></textarea>
+                </div>
+                <div class="card">
+                    <h3>5. 圧倒的な優位性</h3>
+                    <textarea id="lc-advantage" rows="5" placeholder="真似できない強みは？"></textarea>
+                </div>
+                <div class="card">
+                    <h3>6. 顧客セグメント</h3>
+                    <textarea id="lc-customer" rows="5" placeholder="最初に価値を届けるべき顧客は？"></textarea>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">理想の顧客体験をマッピングする</h3>
+            <p>その価値を届けるための、理想的な顧客体験の流れを考えてみましょう。</p>
+            <div class="story-map">
+                <div class="story-column">
+                    <h4>活動1：発見</h4>
+                    <div class="story-card">ストーリー1-1</div>
+                    <div class="story-card">ストーリー1-2</div>
+                </div>
+                <div class="story-column">
+                    <h4>活動2：検討</h4>
+                    <div class="story-card">ストーリー2-1</div>
+                </div>
+                <div class="story-column">
+                    <h4>活動3：利用</h4>
+                    <div class="story-card">ストーリー3-1</div>
+                    <div class="story-card">ストーリー3-2</div>
+                </div>
+                <div class="story-column">
+                    <h4>活動4：継続</h4>
+                    <div class="story-card">ストーリー4-1</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="journey" class="section">
+            <h2>5. 共に歩む道筋：リスクを抑え、確実な一歩を踏み出す</h2>
+            <p>本日、私たちが一緒に描いたこの素晴らしい未来像。これを「絵に描いた餅」で終わらせないために、KAGパートナーシップでは<strong>PoC（Proof of Concept：概念実証）</strong>というアプローチをご提案しています。</p>
+            <div class="card">
+                <h3>PoCとは？</h3>
+                <p>PoCは、本格的な開発に入る前に、小規模かつ短期間でアイデアの実現可能性や価値を検証する「実験」です。これにより、リスクを最小限に抑えながら、投資対効果を明確にし、関係者全員の合意形成を図ることができます。</p>
+                <p>これは、壮大な旅における、<strong>確実で、安全な、そして価値ある第一歩</strong>です。</p>
+            </div>
+            <div class="grid" style="margin-top: 20px;">
+                <div class="card">
+                    <h4>PoCで検証すること</h4>
+                    <ul>
+                        <li><strong>技術的実現性：</strong>本当に作れるのか？</li>
+                        <li><strong>ビジネス価値：</strong>ユーザーに喜ばれるか？</li>
+                        <li><strong>費用対効果：</strong>投資に見合う価値があるか？</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>PoCのメリット</h4>
+                    <ul>
+                        <li>失敗リスクの低減</li>
+                        <li>ステークホルダーの納得感醸成</li>
+                        <li>アジャイルな働き方の体験</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="next-steps" class="section">
+            <h2>6. 次のステップ：未来の実現に向けて</h2>
+            <p>本日のセッションで共有された内容を基に、今後の進め方についてご提案させていただきます。</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Step 1: 未来像の設計図（本日〜1週間後）</h4>
+                    <p>本日の議論をまとめた「未来像の設計図」ドラフトをKAGが作成し、共有いたします。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Step 2: PoC計画の共同策定（2〜3週目）</h4>
+                    <p>設計図を基に、PoCで検証すべき仮説、スコープ、成功基準を共同で定義します。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Step 3: ご提案と意思決定（4週目）</h4>
+                    <p>PoC計画に基づいた正式なご提案書（投資対効果シミュレーション含む）を提出し、実施に向けたご判断をいただきます。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Step 4: PoCキックオフ（5週目〜）</h4>
+                    <p>合意後、いよいよ価値実証の旅が始まります。アジャイルなプロセスを通じて、目に見える成果を共に創り出します。</p>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="alert('本日はありがとうございました。未来に向けた第一歩をご一緒できることを楽しみにしております。')">セッションを終了する</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Navigation ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('#nav-bar button').forEach(button => button.classList.remove('active'));
+            document.getElementById(sectionId)?.classList.add('active');
+            document.querySelector(`nav button[onclick="showSection('${sectionId}')"]`)?.classList.add('active');
+        }
+
+        // --- Tetris Game Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('tetris-canvas');
+            const context = canvas.getContext('2d');
+            const scoreElement = document.getElementById('score');
+            const startButton = document.getElementById('start-button');
+            const gameOverMessage = document.getElementById('game-over-message');
+            
+            // Elements for Technical Debt feature
+            const debtImpactContainer = document.getElementById('debt-impact');
+            const debtItems = document.querySelectorAll('#debt-list li');
+
+            const COLS = 10;
+            const ROWS = 20;
+            const BLOCK_SIZE = 30;
+
+            const COLORS = [null, '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF'];
+            const SHAPES = [ [], [[1, 1, 1, 1]], [[2, 2], [2, 2]], [[0, 3, 0], [3, 3, 3]], [[4, 4, 0], [0, 4, 4]], [[0, 5, 5], [5, 5, 0]], [[6, 0, 0], [6, 6, 6]], [[0, 0, 7], [7, 7, 7]] ];
+
+            let board, piece, score, dropCounter, dropInterval, lastTime, isPaused, animationFrameId;
+            let debtCounter = 0;
+
+            function createBoard() {
+                return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+            }
+
+            function createPiece() {
+                const typeId = Math.floor(Math.random() * (SHAPES.length - 1)) + 1;
+                const matrix = SHAPES[typeId];
+                return {
+                    pos: { x: Math.floor(COLS / 2) - Math.floor(matrix[0].length / 2), y: 0 },
+                    matrix: matrix,
+                    color: COLORS[typeId]
+                };
+            }
+
+            function draw() {
+                if (!context) return;
+                context.fillStyle = '#e9f2f9';
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                drawMatrix(board, { x: 0, y: 0 });
+                if (piece) {
+                    drawMatrix(piece.matrix, piece.pos, piece.color);
+                }
+            }
+
+            function drawMatrix(matrix, offset, color) {
+                matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            context.fillStyle = color || COLORS[value];
+                            context.fillRect((offset.x + x) * BLOCK_SIZE, (offset.y + y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                            context.strokeStyle = '#f4f7f9';
+                            context.lineWidth = 2;
+                            context.strokeRect((offset.x + x) * BLOCK_SIZE, (offset.y + y) * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                        }
+                    });
+                });
+            }
+
+            function merge(board, piece) {
+                piece.matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            board[y + piece.pos.y][x + piece.pos.x] = value;
+                        }
+                    });
+                });
+            }
+            
+            function collide(board, piece) {
+                const matrix = piece.matrix;
+                const offset = piece.pos;
+                for (let y = 0; y < matrix.length; ++y) {
+                    for (let x = 0; x < matrix[y].length; ++x) {
+                        if (matrix[y][x] !== 0) {
+                            const newY = y + offset.y;
+                            const newX = x + offset.x;
+
+                            if (newX < 0 || newX >= COLS || newY >= ROWS ||
+                                (newY >= 0 && board[newY] && board[newY][newX] !== 0)) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+
+            function handlePieceLanded() {
+                merge(board, piece);
+                const clearedRows = sweepBoard();
+                updateScore(clearedRows);
+                
+                if (clearedRows > 0) {
+                    debtCounter = 0;
+                } else {
+                    debtCounter++;
+                }
+                updateDebtDisplay();
+    
+                resetPiece();
+                dropCounter = 0;
+            }
+
+            function pieceDrop() {
+                if (isPaused || !piece) return;
+                piece.pos.y++;
+                if (collide(board, piece)) {
+                    piece.pos.y--;
+                    handlePieceLanded();
+                }
+                dropCounter = 0;
+            }
+            
+            function hardDrop() {
+                if (isPaused || !piece) return;
+                while (!collide(board, piece)) {
+                    piece.pos.y++;
+                }
+                piece.pos.y--;
+                handlePieceLanded();
+            }
+
+            function pieceMove(dir) {
+                if (isPaused || !piece) return;
+                piece.pos.x += dir;
+                if (collide(board, piece)) {
+                    piece.pos.x -= dir;
+                }
+            }
+            
+            function pieceRotate() {
+                if (isPaused || !piece) return;
+                const originalPos = piece.pos.x;
+                const originalMatrix = JSON.parse(JSON.stringify(piece.matrix)); 
+
+                rotate(piece.matrix);
+
+                let offset = 1;
+                while (collide(board, piece)) {
+                    piece.pos.x += offset;
+                    offset = -(offset + (offset > 0 ? 1 : -1));
+                    
+                    if (Math.abs(offset) > piece.matrix[0].length + 1) { 
+                        piece.matrix = originalMatrix; 
+                        piece.pos.x = originalPos; 
+                        return;
+                    }
+                }
+            }
+
+
+            function rotate(matrix) {
+                for (let y = 0; y < matrix.length; ++y) {
+                    for (let x = 0; x < y; ++x) {
+                        [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+                    }
+                }
+                matrix.forEach(row => row.reverse());
+            }
+
+            function resetPiece() {
+                piece = createPiece();
+                if (collide(board, piece)) {
+                    gameOver();
+                }
+            }
+            
+            function gameOver() {
+                 isPaused = true;
+                 if (animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                 }
+                 gameOverMessage.style.display = 'block';
+                 startButton.textContent = 'リトライ';
+                 startButton.disabled = false;
+            }
+
+            function sweepBoard() {
+                let clearedRowCount = 0;
+                outer: for (let y = board.length - 1; y > 0; --y) {
+                    for (let x = 0; x < board[y].length; ++x) {
+                        if (board[y][x] === 0) {
+                            continue outer;
+                        }
+                    }
+                    board.splice(y, 1);
+                    board.unshift(Array(COLS).fill(0));
+                    ++y;
+                    clearedRowCount++;
+                }
+                return clearedRowCount;
+            }
+
+            function update(time = 0) {
+                if (!isPaused) {
+                    const deltaTime = time - lastTime;
+                    lastTime = time;
+                    dropCounter += deltaTime;
+                    if (dropCounter > dropInterval) {
+                        pieceDrop();
+                    }
+                    draw();
+                }
+                animationFrameId = requestAnimationFrame(update);
+            }
+
+            function updateScore(clearedRows) {
+                const points = [0, 10, 30, 60, 100]; 
+                if (clearedRows > 0) {
+                    score += points[clearedRows];
+                    scoreElement.innerText = score;
+                }
+            }
+
+            function updateDebtDisplay() {
+                if (debtCounter > 0) {
+                    debtImpactContainer.style.display = 'block';
+                } else {
+                    debtImpactContainer.style.display = 'none';
+                    debtItems.forEach(item => item.style.opacity = '0');
+                    return;
+                }
+                
+                if (debtCounter >= 1) debtItems[0].style.opacity = '1';
+                if (debtCounter >= 3) debtItems[1].style.opacity = '1';
+                if (debtCounter >= 5) debtItems[2].style.opacity = '1';
+                if (debtCounter >= 7) debtItems[3].style.opacity = '1';
+            }
+
+            document.addEventListener('keydown', event => {
+                if (event.key === 'ArrowLeft') pieceMove(-1);
+                else if (event.key === 'ArrowRight') pieceMove(1);
+                else if (event.key === 'ArrowDown') pieceDrop();
+                else if (event.key === 'ArrowUp') pieceRotate();
+                else if (event.key === ' ') hardDrop();
+                else if (event.key.toLowerCase() === 'p') togglePause();
+            });
+
+            function togglePause() {
+                 if(startButton.textContent === 'ゲーム開始' || startButton.textContent === 'リトライ') return;
+                 isPaused = !isPaused;
+                 startButton.textContent = isPaused ? '再開' : '一時停止';
+            }
+            
+            function startGame() {
+                board = createBoard();
+                score = 0;
+                dropCounter = 0;
+                dropInterval = 1000;
+                lastTime = 0;
+                isPaused = false;
+                
+                debtCounter = 0;
+                updateDebtDisplay();
+                updateScore(0);
+                scoreElement.innerText = 0;
+
+                resetPiece();
+                gameOverMessage.style.display = 'none';
+                startButton.textContent = '一時停止';
+                startButton.disabled = false;
+                
+                if(animationFrameId) {
+                    cancelAnimationFrame(animationFrameId);
+                }
+                animationFrameId = null;
+                update();
+            }
+
+            startButton.addEventListener('click', () => {
+                const currentState = startButton.textContent;
+                if (currentState === 'ゲーム開始' || currentState === 'リトライ') {
+                    startGame();
+                } else {
+                    togglePause();
+                }
+            });
+
+            // Initial setup
+            isPaused = true;
+            board = createBoard();
+            draw();
+        });
+    </script>
+</body>
+</html>

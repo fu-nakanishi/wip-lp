@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDDIアジャイル開発センター | 戦略を実行できる組織へ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+        }
+        .cta-button {
+            transition: all 0.3s ease;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(255, 102, 0, 0.4);
+        }
+        .feature-card, .strength-card, .case-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover, .strength-card:hover, .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">
+                <span class="text-orange-500">KDDI</span>アジャイル開発センター
+            </h1>
+            <a href="#contact" class="hidden md:inline-block bg-orange-500 text-white font-bold py-2 px-6 rounded-lg cta-button">
+                無料相談はこちら
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="gradient-bg py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
+                    「戦略が実行されない」<br class="md:hidden">その課題、<span class="text-orange-500">”組織”</span>にあります。
+                </h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                    優れた戦略も、実行する組織がなければ意味を成しません。<br>
+                    私たちは、戦略を血肉に変える「アジャイル組織開発」で、貴社の変革を成功に導きます。
+                </p>
+                <a href="#contact" class="bg-orange-500 text-white font-bold py-4 px-10 rounded-lg text-lg inline-block cta-button">
+                    まずは無料で課題を相談する
+                </a>
+            </div>
+        </section>
+
+        <!-- Problem Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">なぜ、貴社の戦略は<br class="md:hidden">「絵に描いた餅」で終わるのか？</h3>
+                    <p class="text-gray-600">その背景には、多くの組織に共通する根源的な課題が潜んでいます。</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Cards are the same as before -->
+                     <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 feature-card">
+                        <div class="flex items-center justify-center h-16 w-16 bg-red-100 rounded-full mb-6">
+                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">戦略と現場の断絶</h4>
+                        <p class="text-gray-600">トップの戦略が「やらされ仕事」になり、現場の当事者意識が欠如。100点の戦略が10点の成果で終わってしまう。</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 feature-card">
+                         <div class="flex items-center justify-center h-16 w-16 bg-red-100 rounded-full mb-6">
+                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">「見えないもの」の軽視</h4>
+                        <p class="text-gray-600">ツールや仕組みといった「見えるもの」に投資しても、カルチャーやマインドセットが変わらず、形骸化してしまう。</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 feature-card">
+                        <div class="flex items-center justify-center h-16 w-16 bg-red-100 rounded-full mb-6">
+                           <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">組織内に蔓延する遠心力</h4>
+                        <p class="text-gray-600">部門間の対立やセクショナリズムが横行し、ビジネスが前に進まない。社内の人間関係で事業が停滞する。</p>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 feature-card">
+                         <div class="flex items-center justify-center h-16 w-16 bg-red-100 rounded-full mb-6">
+                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21v-1a6 6 0 00-5.176-5.97M15 21h6m-6-13h6m-6 4h6m-6 4h6"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">自前改革の限界</h4>
+                        <p class="text-gray-600">組織改革が「仲良しごっこ」で終わり、成果が出ない。高度な専門性が必要な組織開発は、片手間で進められない。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Strengths / Vision Section -->
+        <section class="py-16 md:py-24 gradient-bg">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">なぜ、KDDIアジャイル開発センターなのか？</h3>
+                    <p class="text-gray-600 max-w-3xl mx-auto">私たちのビジョンは、日本のすべての企業が自律的に変化し、成長し続けられる「アジャイルな組織」へと進化する未来。その実現のために、他にはない3つの強みで貴社を支えます。</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <!-- Strength 1 -->
+                    <div class="bg-white p-8 rounded-xl strength-card">
+                        <div class="flex items-center justify-center h-20 w-20 bg-orange-100 rounded-full mx-auto mb-6">
+                             <svg class="w-10 h-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.092 1.21-.138 2.43-.138 3.662v4.286A48.678 48.678 0 007.5 21h9a48.678 48.678 0 003.138-4.714V12z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">KDDIの事業基盤 × アジャイル開発力</h4>
+                        <p class="text-gray-600">KDDIグループの信頼性と大規模な事業知見を土台に、俊敏で柔軟なアジャイル開発を実践。安定と変革を両立させます。</p>
+                    </div>
+                    <!-- Strength 2 -->
+                    <div class="bg-white p-8 rounded-xl strength-card">
+                        <div class="flex items-center justify-center h-20 w-20 bg-orange-100 rounded-full mx-auto mb-6">
+                            <svg class="w-10 h-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">技術と組織を両輪でドライブ</h4>
+                        <p class="text-gray-600">システムを開発するだけではありません。イノベーションを持続的に生み出すチームとカルチャーを、技術と並行して構築します。</p>
+                    </div>
+                    <!-- Strength 3 -->
+                    <div class="bg-white p-8 rounded-xl strength-card">
+                         <div class="flex items-center justify-center h-20 w-20 bg-orange-100 rounded-full mx-auto mb-6">
+                            <svg class="w-10 h-10 text-orange-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">理論と実践の融合</h4>
+                        <p class="text-gray-600">組織科学の深い知見と、様々な業界での豊富な実践経験を融合。机上の空論ではない、現実的で効果的な変革を支援します。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">戦略を”実行できる組織”へ。</h3>
+                    <p class="text-gray-600 max-w-2xl mx-auto">私たちは、伴走型のアプローチで組織の深層に働きかけ、変革を成功へと導きます。</p>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <!-- Solution cards are the same as before -->
+                    <div class="bg-gray-50 p-8 rounded-lg border flex flex-col md:flex-row items-start md:items-center">
+                        <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-8">
+                            <div class="flex items-center justify-center h-20 w-20 bg-green-100 rounded-full">
+                                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-orange-500 font-bold">APPROACH 01</span>
+                            <h4 class="text-2xl font-bold text-gray-900 mt-1 mb-2">現場を巻き込む「アジャイルな戦略共創」</h4>
+                            <p class="text-gray-600">完璧な戦略をトップダウンで下ろすのではなく、共に戦略を練り上げるプロセスを通じて「自分たちの戦略」という強い当事者意識を醸成します。</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg border flex flex-col md:flex-row items-start md:items-center">
+                        <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-8">
+                             <div class="flex items-center justify-center h-20 w-20 bg-green-100 rounded-full">
+                                <svg class="w-10 h-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125a1.125 1.125 0 00-1.125 1.125v12.75c0 .621.504 1.125 1.125 1.125z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                             <span class="text-orange-500 font-bold">APPROACH 02</span>
+                            <h4 class="text-2xl font-bold text-gray-900 mt-1 mb-2">「見える/見えないもの」の統合設計</h4>
+                            <p class="text-gray-600">カルチャーとマインドセットを土台に、人事制度や評価といった「見える仕組み」を設計。真に機能する組織の成功循環を創り出します。</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg border flex flex-col md:flex-row items-start md:items-center">
+                        <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-8">
+                            <div class="flex items-center justify-center h-20 w-20 bg-green-100 rounded-full">
+                                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </div>
+                        </div>
+                        <div>
+                             <span class="text-orange-500 font-bold">APPROACH 03</span>
+                            <h4 class="text-2xl font-bold text-gray-900 mt-1 mb-2">変革のエネルギーを生むチェンジマネジメント</h4>
+                            <p class="text-gray-600">変革への「恐怖」を「希望」に変え、現状維持のリスクを共有することで、組織全体のエネルギーを一つの方向へと導きます。</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg border flex flex-col md:flex-row items-start md:items-center">
+                        <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-8">
+                            <div class="flex items-center justify-center h-20 w-20 bg-green-100 rounded-full">
+                                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                            </div>
+                        </div>
+                        <div>
+                             <span class="text-orange-500 font-bold">APPROACH 04</span>
+                            <h4 class="text-2xl font-bold text-gray-900 mt-1 mb-2">組織の「内部構造」のデザイン</h4>
+                            <p class="text-gray-600">ビジョンと戦略が、確実に業績と働きがいに繋がる「ブラックボックス」を解明し、生命体のように機能する組織を設計します。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Studies Section -->
+        <section class="py-16 md:py-24 gradient-bg">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">導入事例</h3>
+                    <p class="text-gray-600">私たちは、様々な業界の組織変革を成功に導いてきました。</p>
+                </div>
+                <!-- **** EDITED THIS LINE **** -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Case 1 -->
+                    <div class="bg-white p-8 rounded-xl case-card border border-gray-200">
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">大手製造業 A社</h4>
+                        <p class="font-semibold text-red-600 mb-4">【課題】DX戦略が現場に浸透せず、部門間の連携も希薄</p>
+                        <p class="text-gray-600 mb-4"><span class="font-bold">【施策】</span>経営層と現場を巻き込んだワークショップでビジョンを共創。部門横断のアジャイルチームを組成し、小さな成功体験を積み重ねる文化を醸成しました。</p>
+                        <div class="bg-green-50 text-green-800 p-4 rounded-lg">
+                            <p class="font-bold">【成果】新製品開発サイクルが50%短縮。社員エンゲージメントスコアが30%向上。</p>
+                        </div>
+                    </div>
+                     <!-- Case 2 -->
+                    <div class="bg-white p-8 rounded-xl case-card border border-gray-200">
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">金融機関 B社</h4>
+                        <p class="font-semibold text-red-600 mb-4">【課題】縦割り組織と硬直化した意思決定プロセスがイノベーションを阻害</p>
+                        <p class="text-gray-600 mb-4"><span class="font-bold">【施策】</span>心理的安全性を確保しつつ、挑戦を奨励する評価制度へ改定。「見える/見えないもの」の統合設計を実施しました。</p>
+                        <div class="bg-green-50 text-green-800 p-4 rounded-lg">
+                            <p class="font-bold">【成果】新規サービス立ち上げ件数が前年比3倍に。若手からの新規事業提案が活発化。</p>
+                        </div>
+                    </div>
+                     <!-- Case 3 -->
+                    <div class="bg-white p-8 rounded-xl case-card border border-gray-200">
+                        <h4 class="text-xl font-bold text-gray-900 mb-2">急成長IT企業 C社</h4>
+                        <p class="font-semibold text-red-600 mb-4">【課題】組織拡大に伴うカルチャーの喪失と部門間の対立</p>
+                        <p class="text-gray-600 mb-4"><span class="font-bold">【施策】</span>チェンジマネジメント手法を用い、全社で「変わる必要性」を共有。共通の価値観を再定義し、コミュニケーションを活性化しました。</p>
+                        <div class="bg-green-50 text-green-800 p-4 rounded-lg">
+                            <p class="font-bold">【成果】離職率が半減し、組織の一体感が回復。全社横断プロジェクトが円滑に進行。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- CTA Section -->
+        <section id="contact" class="py-16 md:py-24 bg-gray-800 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-3xl md:text-4xl font-bold mb-4">
+                    100点の戦略が、10点の成果で終わる前に。
+                </h3>
+                <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
+                    まずは、貴社の課題をお聞かせください。専門のコンサルタントが、戦略実行を阻む組織の根本課題を紐解き、変革への第一歩をご提案します。
+                </p>
+                
+                <div class="max-w-xl mx-auto bg-white p-8 rounded-lg text-gray-800 shadow-2xl">
+                    <h4 class="font-bold text-2xl mb-6">無料相談・お問い合わせ</h4>
+                    <form id="contact-form">
+                        <div class="mb-4">
+                            <label for="name" class="block text-left text-sm font-medium text-gray-700 mb-1">お名前</label>
+                            <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="company" class="block text-left text-sm font-medium text-gray-700 mb-1">会社名</label>
+                            <input type="text" id="company" name="company" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-left text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+                            <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-left text-sm font-medium text-gray-700 mb-1">ご相談内容</label>
+                            <textarea id="message" name="message" rows="4" required class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-orange-500 focus:border-orange-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-orange-500 text-white font-bold py-3 px-6 rounded-lg text-lg cta-button">
+                            無料で相談する
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p class="font-bold text-lg mb-2">KDDIアジャイル開発センター株式会社</p>
+            <p class="text-gray-400">&copy; 2024 KDDI Agile Development Center Inc. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Form submission handler
+        const contactForm = document.getElementById('contact-form');
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // In a real application, you would send this data to a server.
+            // For this demo, we'll just show an alert.
+            alert('お問い合わせありがとうございます。担当者より追ってご連絡いたします。');
+            contactForm.reset();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAGパートナーシップ 顧客共創セッション</title>
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #4a7a9c;
+            --background-color: #f4f7f9;
+            --text-color: #333;
+            --header-text-color: #ffffff;
+            --card-bg-color: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-color: #ff9900;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+    .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: var(--header-text-color);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-color);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.1em;
+        }
+        nav {
+            background-color: var(--secondary-color);
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav button {
+            background-color: transparent;
+            border: 1px solid var(--header-text-color);
+            color: var(--header-text-color);
+            padding: 10px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        nav button.active, nav button:hover {
+            background-color: var(--header-text-color);
+            color: var(--secondary-color);
+        }
+    .section {
+            display: none;
+            padding: 30px 20px;
+            background-color: var(--card-bg-color);
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    .section.active {
+            display: block;
+        }
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+    .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+    .card {
+            background-color: #fdfdfd;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+    .card h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            font-size: 1em;
+        }
+    .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+    .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--secondary-color);
+        }
+    .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+    .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            border: 2px solid var(--secondary-color);
+        }
+    .timeline-item h4 {
+            margin: 0 0 5px 0;
+            color: var(--primary-color);
+        }
+    .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: block;
+            margin: 20px auto 0;
+            transition: background-color 0.3s;
+        }
+    .btn-primary:hover {
+            background-color: #e68a00;
+        }
+    .lean-canvas {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+    .lean-canvas.card {
+            min-height: 150px;
+        }
+    .story-map {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+    .story-column {
+            flex: 0 0 250px;
+            background-color: #f0f4f7;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    .story-column h4 {
+            text-align: center;
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+    .story-card {
+            background-color: white;
+            padding: 8px;
+            border-radius: 3px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>KAGパートナーシップ 顧客共創セッション</h1>
+        <p>「予測型養殖」への変革を共に実現するプロジェクトキックオフ</p>
+    </header>
+
+    <nav id="nav-bar">
+        <button onclick="showSection('intro', this)" class="active">1. はじめに</button>
+        <button onclick="showSection('diagnosis', this)">2. 現状と未来への期待</button>
+        <button onclick="showSection('foundation', this)">3. 成長の土台づくり</button>
+        <button onclick="showSection('vision', this)">4. 未来像の再確認と具体化</button>
+        <button onclick="showSection('journey', this)">5. プロジェクトの進め方</button>
+        <button onclick="showSection('next-steps', this)">6. 今後の進め方</button>
+    </nav>
+
+    <div class="container">
+        <div id="intro" class="section active">
+            <h2>1. はじめに：本プロジェクトの目的と成功の定義</h2>
+            <p>本日は、新たなパートナーシップの始まりとなる重要なプロジェクトキックオフにお時間をいただき、誠にありがとうございます。</p>
+            <p>私たちは、このプロジェクトを単なる機能開発とは考えておりません。貴社が目指す<strong>「リアクティブな記録管理から、プロアクティブなデータ駆動型養殖経営への転換」</strong>という壮大なビジョンを実現するための、記念すべき第一歩と捉えています。このセッションを通じて、その成功イメージを皆様と共有し、共にゴールを目指す強固なチームを築いていきたいと考えています。</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>現状の操業モデル</h3>
+                    <ul>
+                        <li>勘と経験に依存した事後対応</li>
+                        <li>分断されたデータと手作業での記録</li>
+                        <li>見えにくいコストと機会損失</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>目指す未来：予測型養殖</h3>
+                    <ul>
+                        <li>データに基づくプロアクティブな意思決定</li>
+                        <li>リアルタイムな可視化とAIによる予測</li>
+                        <li>ROI 275%を目指す高収益な事業構造</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="diagnosis" class="section">
+            <h2>2. 現状と未来への期待：皆様の声をお聞かせください</h2>
+            <p>これまでのシステムや業務プロセスを振り返り、今回のプロジェクトで特に改善・実現したいことについて、皆様の言葉でお聞かせいただけますでしょうか。</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>日々の業務について</h3>
+                    <p>これまでのシステムで、「ここがもう少しこうだったら」と感じていた点はありますか？（例：入力の手間、情報の探しにくさなど）</p>
+                    <textarea id="diag-process" rows="4" placeholder="例：船の上では手袋をしているので、スマホでの細かい入力が大変だった…"></textarea>
+                </div>
+                <div class="card">
+                    <h3>データ活用について</h3>
+                    <p>今回のプロジェクトで、データが見えるようになることで、特に期待していることは何ですか？</p>
+                    <textarea id="diag-cost" rows="4" placeholder="例：斃死の予兆が早く分かれば、すぐに対策が打てるようになるかもしれない…"></textarea>
+                </div>
+                <div class="card">
+                    <h3>ノウハウの継承について</h3>
+                    <p>熟練の方の「勘」や「経験」を、どのようにすれば組織の力に変えていけるとお考えですか？</p>
+                    <textarea id="diag-knowledge" rows="4" placeholder="例：若手でも、ベテランと同じような判断ができるような仕組みが欲しい…"></textarea>
+                </div>
+                <div class="card">
+                    <h3>新しい働き方について</h3>
+                    <p>このプロジェクトを通じて、現場の働き方はどのように変わると理想的でしょうか？</p>
+                    <textarea id="diag-risk" rows="4" placeholder="例：無駄な報告作業が減り、もっと牡蠣の世話に集中できる時間が増えると嬉しい…"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="foundation" class="section">
+            <h2>3. 成長の土台づくり：未来への投資としてのシステム改善</h2>
+            <p>皆様からいただいた貴重なご意見は、私たちが「成長の土台」と呼ぶものに関わっています。日々の少しの使いにくさや手間の積み重ねは、気づかぬうちに、新しい挑戦への足かせになっていることがあります。</p>
+            <img src="https://i.imgur.com/aV5gD4h.png" alt="成長の土台を示す氷山モデルの概念図" style="width:100%; max-width:600px; display:block; margin:20px auto;">
+            <div class="card">
+                <h3>「成長の土台」を整えることの価値</h3>
+                <p>今回のプロジェクトは、単に目に見える機能を追加するだけではありません。水面下にあるシステムの土台を整えることで、将来のビジネス成長を加速させるための重要な投資です。</p>
+                <ul id="debt-impact-list">
+                    <li><strong>俊敏性の向上：</strong>将来、新しいアイデアが生まれた時に、迅速かつ低コストで実現できるようになります。</li>
+                    <li><strong>イノベーションの促進：</strong>現場の誰もがデータに基づいた改善提案をしやすくなり、ボトムアップの革新が生まれます。</li>
+                    <li><strong>働きがいの向上：</strong>日々の面倒な作業から解放され、より創造的で価値の高い仕事に集中できます。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="vision" class="section">
+            <h2>4. 未来像の再確認と具体化：成功の地図を共に描く</h2>
+            <p>いただいたレポートを基に、我々なりに貴社の目指す未来像をこの「リーンキャンバス」にまとめてみました。この地図が正しいか、さらに磨き上げるために、皆様のお知恵をお貸しください。</p>
+            <div class="lean-canvas">
+                <div class="card">
+                    <h3>1. 顧客（養殖事業）の課題</h3>
+                    <textarea id="lc-problem" rows="5" placeholder="・斃死リスクの低減&#x0a;・生育状況の最適化&#x0a;・勘と経験への依存からの脱却&#x0a;・労働生産性の向上">・斃死リスクの低減
+・生育状況の最適化
+・勘と経験への依存からの脱却
+・労働生産性の向上</textarea>
+                </div>
+                <div class="card">
+                    <h3>2. 独自の価値提案</h3>
+                    <textarea id="lc-uvp" rows="5" placeholder="データとAIで、持続可能な予測型養殖を実現する">データとAIで、持続可能な予測型養殖を実現する</textarea>
+                </div>
+                <div class="card">
+                    <h3>3. ソリューション</h3>
+                    <textarea id="lc-solution" rows="5" placeholder="・オフライン対応のモバイルアプリ&#x0a;・IoTセンサーによる環境データ自動収集&#x0a;・AIによる斃死・生育予測モデル&#x0a;・リアルタイム分析ダッシュボード">・オフライン対応のモバイルアプリ
+・IoTセンサーによる環境データ自動収集
+・AIによる斃死・生育予測モデル
+・リアルタイム分析ダッシュボード</textarea>
+                </div>
+                <div class="card">
+                    <h3>4. 主要指標 (KPI)</h3>
+                    <textarea id="lc-metrics" rows="5" placeholder="・斃死率の削減 (目標: 15-20%減)&#x0a;・データ入力時間の削減 (目標: 5-8h/週)&#x0a;・飼料転換率(FCR)の改善&#x0a;・システム利用率">・斃死率の削減 (目標: 15-20%減)
+・データ入力時間の削減 (目標: 5-8h/週)
+・飼料転換率(FCR)の改善
+・システム利用率</textarea>
+                </div>
+                <div class="card">
+                    <h3>5. 圧倒的な優位性</h3>
+                    <textarea id="lc-advantage" rows="5" placeholder="現場の暗黙知とリアルタイムデータを融合させた独自の予測モデル">現場の暗黙知とリアルタイムデータを融合させた独自の予測モデル</textarea>
+                </div>
+                <div class="card">
+                    <h3>6. ユーザーセグメント</h3>
+                    <textarea id="lc-customer" rows="5" placeholder="・現場作業員&#x0a;・養殖場の管理者&#x0a;・経営層">・現場作業員
+・養殖場の管理者
+・経営層</textarea>
+                </div>
+            </div>
+            <h3 style="margin-top: 40px;">価値提供の流れをマッピングする (ユーザーストーリーマップ)</h3>
+            <p>その価値を届けるための、日々の業務の流れを一緒に確認しましょう。</p>
+            <div class="story-map">
+                <div class="story-column"><h4>採苗・抑制</h4><div class="story-card">最適な投入タイミングを判断</div></div>
+                <div class="story-column"><h4>本殖・育成管理</h4><div class="story-card">日々の生育状況を記録</div><div class="story-card">斃死数を記録</div><div class="story-card">付着物除去作業を記録</div></div>
+                <div class="story-column"><h4>リスク管理</h4><div class="story-card">斃死リスクアラートを確認</div><div class="story-card">環境データの変化を監視</div></div>
+                <div class="story-column"><h4>収穫・経営判断</h4><div class="story-card">最適な収穫時期を予測</div><div class="story-card">全体のROIを分析</div></div>
+            </div>
+        </div>
+
+        <div id="journey" class="section">
+            <h2>5. プロジェクトの進め方：共に育て、共に成功するアジャイル開発</h2>
+            <p>この挑戦的なプロジェクトを成功させるために、私たちは「アジャイル開発」という進め方を提案します。これは、最初に完璧な計画を立てるのではなく、<strong>2週間という短いサイクルで「動くもの」を作り、皆様に実際に触っていただきながら、対話を重ねて一緒に正解を見つけていく</strong>方法です。</p>
+            <div class="grid">
+                <div class="card">
+                    <h4>アジャイル開発のメリット</h4>
+                    <ul>
+                        <li><strong>手戻りの最小化：</strong>早い段階で認識のズレを発見し、修正できます。</li>
+                        <li><strong>価値の早期実現：</strong>最も重要な機能からリリースし、早く効果を実感できます。</li>
+                        <li><strong>変化への柔軟性：</strong>途中でより良いアイデアが出れば、柔軟に計画に取り込めます。</li>
+                        <li><strong>チームの一体感：</strong>開発者と利用者が一体となって、最高のプロダクトを創り上げます。</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>皆様にお願いしたいこと</h4>
+                    <p>この進め方では、皆様の協力が不可欠です。2週間に一度の「お披露目会（スプリントレビュー）」にぜひご参加いただき、率直なフィードバックをお聞かせください。皆様の声が、プロジェクトを成功に導く何よりの羅針盤となります。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="next-steps" class="section">
+            <h2>6. 今後の進め方：要件定義から開発へ</h2>
+            <p>いただいたスケジュールに基づき、プロジェクトを成功に導くための具体的な進め方をご提案します。</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Step 1: 要件定義 & スコープ決定（6月〜7月）</h4>
+                    <p>本日共有した未来像を基に、開発すべき機能（ユーザーストーリー）を全て洗い出し、優先順位をつけます。このセッション自体が、その重要な第一歩です。毎週の定例会で議論を重ね、7月末までに開発スコープを共に確定させましょう。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Step 2: アジャイル開発（8月〜10月 or 11月）</h4>
+                    <p>決定した優先順位に基づき、2週間単位のスプリントで開発を進めます。2週間ごとに「動くもの」をお見せし、皆様からのフィードバックをいただきながら、着実にシステムを成長させていきます。</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Step 3: 最初のスプリントでやること</h4>
+                    <p>要件定義フェーズの最初のスプリントでは、本日具体化したユーザーストーリーマップをさらに詳細化し、最も価値の高い機能から開発に着手できるよう準備を進めます。まずは現場の皆様が最も効果を実感できる機能から形にしていきましょう。</p>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="alert('本日はありがとうございました。予測型養殖の実現に向けた、価値ある旅路をご一緒できることを楽しみにしております！')">キックオフセッションを終了する</button>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId, element) {
+            // Deactivate all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Deactivate all nav buttons
+            document.querySelectorAll('#nav-bar button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Activate the target section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Activate the clicked button
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
