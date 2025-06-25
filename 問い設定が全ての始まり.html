@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「正しい問い」の力：ビジョンと企業価値の探求</title>
+    <!-- Tailwind CSSをCDNから読み込み -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 基本的なフォントとダークテーマの背景色を設定 */
+        body {
+            font-family: 'sans-serif';
+            background-color: #111827; /* bg-gray-900 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300 font-sans">
+
+    <!-- ヘッダー -->
+    <header class="bg-gray-800 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-blue-400">
+                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15A2.5 2.5 0 0 1 9.5 22h-3A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2h3Z"></path><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15A2.5 2.5 0 0 0 14.5 22h3a2.5 2.5 0 0 0 2.5-2.5v-15A2.5 2.5 0 0 0 17.5 2h-3Z"></path><path d="M12 14v-4"></path><path d="M16 12h-8"></path>
+                </svg>
+                「正しい問い」の力：ビジョンと企業価値の探求
+            </h1>
+            <nav class="hidden md:flex space-x-4">
+                <button data-tab="analysis" class="nav-button px-3 py-2 rounded-md text-sm font-medium bg-blue-600">両社比較</button>
+                <button data-tab="synthesis" class="nav-button px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">考察</button>
+                <button data-tab="framework" class="nav-button px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700">フレームワーク</button>
+            </nav>
+            <div class="md:hidden">
+                <select id="nav-select" class="bg-gray-700 text-white p-2 rounded">
+                    <option value="analysis">両社比較</option>
+                    <option value="synthesis">考察</option>
+                    <option value="framework">フレームワーク</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container mx-auto p-4 md:p-8">
+        <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-white mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-yellow-400">
+                    <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 9 5c-1.3 0-2.5.5-3.5 1.5-1 .9-1.5 2.2-1.5 3.5.1 1.4.7 2.7 1.5 3.5.7.8 1.2 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path>
+                </svg>
+                はじめに：なぜ「問い」が重要なのか？
+            </h2>
+            <p class="text-gray-300 leading-relaxed">
+                多くのビジネスは「何を売るか（What）」や「どう作るか（How）」から始まります。しかし、テスラやパタゴニアのような時代を定義する企業は、より根源的な<strong class="text-yellow-400">「なぜやるのか（Why）」</strong>、すなわち<strong class="text-cyan-400">「どのような問題を解決したいのか」</strong>という壮大な問いから出発しています。
+                <br>
+                この分析では、両社の掲げる問題意識と企業価値の関係性を探りながら、事業の成否を分けるのは機能やタスクの設計以前にある<strong class="font-bold text-white">「問いの設定」</strong>がいかに重要であるかを明らかにします。
+            </p>
+        </div>
+
+        <!-- 各タブのコンテンツ -->
+        <div id="analysis" class="tab-content space-y-8">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Tesla Card -->
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700 flex flex-col h-full">
+                    <h2 class="text-3xl font-bold text-white mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-red-500"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg>
+                        Tesla, Inc.
+                    </h2>
+                    <div class="space-y-4 text-gray-300 flex-grow">
+                        <div><h3 class="font-semibold text-sky-400 text-lg">掲げる問題意識</h3><p class="mt-1">化石燃料への依存とそれに伴う気候変動</p></div>
+                        <div><h3 class="font-semibold text-sky-400 text-lg">実現したい社会 (ビジョン)</h3><p class="mt-1 italic">「世界の持続可能なエネルギーへの移行を加速させる」</p></div>
+                        <div><h3 class="font-semibold text-sky-400 text-lg">ビジョン実現の柱</h3><ul class="list-disc list-inside mt-1 space-y-1"><li>魅力的な電気自動車（EV）をマスマーケットに届ける</li><li>太陽光発電と蓄電ソリューションを統合する</li><li>自律走行技術で輸送の概念を変革する</li></ul></div>
+                        <div><h3 class="font-semibold text-sky-400 text-lg">マスタープラン</h3><p class="mt-1 bg-gray-900 p-3 rounded-lg text-sm">①高級スポーツカーを作り→②その利益で手頃な車を作り→③さらにその利益でより安価な量産車を作り→④その過程でゼロエミッションの発電選択肢を提供する</p></div>
+                    </div>
+                </div>
+                <!-- Patagonia Card -->
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700 flex flex-col h-full">
+                    <h2 class="text-3xl font-bold text-white mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-green-500"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg>
+                        Patagonia, Inc.
+                    </h2>
+                    <div class="space-y-4 text-gray-300 flex-grow">
+                        <div><h3 class="font-semibold text-sky-400 text-lg">掲げる問題意識</h3><p class="mt-1">アパレル産業が引き起こす環境破壊と過剰消費</p></div>
+                        <div><h3 class="font-semibold text-sky-400 text-lg">実現したい社会 (ビジョン)</h3><p class="mt-1 italic">「私たちは、故郷である地球を救うためにビジネスを営む」</p></div>
+                        <div><h3 class="font-semibold text-sky-400 text-lg">ビジョン実現の柱</h3><ul class="list-disc list-inside mt-1 space-y-1"><li>最高の製品を作り、不必要な環境負荷を与えない</li><li>ビジネスを手段に環境危機への解決策を提示し、実行する</li><li>自然環境の保護と回復のために売上の一部を寄付する (1% for the Planet)</li></ul></div>
+                        <div><h3 class="font-semibold text-sky-400 text-lg">マスタープラン</h3><p class="mt-1 bg-gray-900 p-3 rounded-lg text-sm">①高品質で長寿命な製品に集中し→②修理・再利用（Worn Wear）を奨励し→③サプライチェーンの透明性を確保し→④利益を環境保護活動に使い→⑤最終的に会社の所有権を地球（非営利団体）に譲渡する</p></div>
+                    </div>
+                </div>
+            </div>
+            <!-- MarketCap Chart -->
+            <div class="bg-gray-800 rounded-xl shadow-2xl p-6 border border-gray-700">
+                <h2 class="text-2xl font-bold text-white mb-4 flex items-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-green-400"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                     企業価値の比較
+                </h2>
+                <p class="text-gray-400 mb-6">掲げる問題意識とビジネスモデルの違いが、企業価値の評価にどう反映されているかを示します。</p>
+                <div class="flex justify-around items-end h-80 space-x-4">
+                    <div class="flex flex-col items-center w-1/3">
+                        <div class="w-full bg-gray-700 rounded-t-lg flex items-end" style="height: 100%;">
+                            <div class="w-full bg-gradient-to-t from-red-600 to-red-400 rounded-t-lg" style="height: 100%; min-height: 2px;"></div>
+                        </div>
+                        <p class="mt-2 font-bold text-white text-lg">$780B</p>
+                        <p class="text-sm text-gray-400 text-center">Tesla, Inc.</p>
+                        <p class="text-xs text-gray-500 text-center">(時価総額 (2024年6月時点の概算値))</p>
+                    </div>
+                    <div class="flex flex-col items-center w-1/3">
+                        <div class="w-full bg-gray-700 rounded-t-lg flex items-end" style="height: 100%;">
+                             <div class="w-full bg-gradient-to-t from-green-600 to-green-400 rounded-t-lg" style="height: 3.84%; min-height: 2px;"></div>
+                        </div>
+                        <p class="mt-2 font-bold text-white text-lg">$3B</p>
+                        <p class="text-sm text-gray-400 text-center">Patagonia, Inc.</p>
+                        <p class="text-xs text-gray-500 text-center">(企業価値 (2022年所有権移転時の推定値))</p>
+                    </div>
+                </div>
+                <div class="mt-6 text-gray-300 bg-gray-900 p-4 rounded-lg">
+                    <p><strong class="text-red-400">テスラ：</strong>市場の変革と成長性を最大化するモデル。巨大な資本を必要とし、公開市場で大規模な資金調達を行うことで天文学的な時価総額を実現。</p>
+                    <p class="mt-2"><strong class="text-green-400">パタゴニア：</strong>理念の純粋性を最優先するモデル。非公開を貫き、成長の規模よりも理念の持続可能性を重視。企業価値は絶対額では小さいが、その理念的価値は計り知れない。</p>
+                    <p class="mt-4 font-semibold text-white">→ 両社の価値の差は「優劣」ではなく、設定した「問い」と「目的」の違いそのものである。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="synthesis" class="tab-content hidden bg-gray-800 rounded-xl shadow-2xl p-8 border border-gray-700 text-gray-300">
+             <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-blue-400"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15A2.5 2.5 0 0 1 9.5 22h-3A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2h3Z"></path><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15A2.5 2.5 0 0 0 14.5 22h3a2.5 2.5 0 0 0 2.5-2.5v-15A2.5 2.5 0 0 0 17.5 2h-3Z"></path><path d="M12 14v-4"></path><path d="M16 12h-8"></path></svg>
+                 考察：すべては「問い」から始まる
+            </h2>
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-red-400 mb-3">浅い問い (機能レベルの思考)</h3>
+                    <div class="bg-gray-900 p-4 rounded-lg"><p class="italic">「どうすれば環境に優しい商品を売れるか？」</p><p class="mt-2 text-sm text-gray-400">この問いは、既存の市場のルールの中で「環境」という付加価値を付けることに留まります。これは製品改善やマーケティング戦術の話であり、業界構造や社会システムそのものを変える力は持ちにくいです。</p></div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-green-400 mb-3">本質的な問い (ビジョンレベルの思考)</h3>
+                    <p class="mb-4">テスラとパタゴニアの強さは、この「問い」のスケールと深さにあります。</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-gray-900 p-4 rounded-lg border-l-4 border-red-500">
+                            <h4 class="font-bold text-white flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-red-500"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path></svg> テスラの問い</h4>
+                            <p class="italic mt-2">「どうすれば人類は、エネルギーの生産と消費の方法を根本から変え、持続可能な未来へ移行できるか？」</p><p class="mt-2 text-sm text-gray-400">この問いは単なる「EVを売る」ことを超え、エネルギー・エコシステム全体の変革を目指します。だからこそ、EVだけでなく、蓄電池、太陽光パネル、充電インフラという広大な事業領域（タスク）が必然的に生まれるのです。</p>
+                        </div>
+                        <div class="bg-gray-900 p-4 rounded-lg border-l-4 border-green-500">
+                            <h4 class="font-bold text-white flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-2 text-green-500"><path d="m8 3 4 8 5-5 5 15H2L8 3z"></path></svg> パタゴニアの問い</h4>
+                            <p class="italic mt-2">「どうすればビジネスは、地球を破壊する側から、救う側へと役割を変えられるか？」</p><p class="mt-2 text-sm text-gray-400">この問いは「良い服を売る」ことを超え、ビジネスの存在意義そのものを問い直します。だからこそ、製品の長寿命化、修理文化の促進、そして最終的には「会社の所有」という資本主義の根幹にまで踏み込むマスタープランが生まれたのです。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <h3 class="text-2xl font-bold text-white mb-4">結論：問題意識と時価総額の関係性</h3>
+                    <p class="mb-3">問題意識の大きさと時価総額に<strong class="text-yellow-400">直接的な相関関係があるとは一概には言えません。</strong> パタゴニアのように、理念の純粋性を追求するために経済的リターンを意図的に抑制するモデルも存在します。</p>
+                    <p>しかし、<strong class="text-cyan-400">「設定した問いの大きさが、事業が到達しうるインパクトと価値の総量を規定する」</strong>とは言えるでしょう。</p>
+                    <ul class="list-disc list-inside mt-4 space-y-2 bg-gray-900 p-5 rounded-lg">
+                        <li><strong class="text-red-400">テスラ</strong>は「地球規模のエネルギー問題解決」という巨大な問いを立て、その解決策が巨大な市場と成長機会を生むと信じ、天文学的な時価総額を達成しました。</li>
+                        <li><strong class="text-green-400">パタゴニア</strong>は「資本主義と環境の両立」という哲学的な問いを立て、その答えとして利益の最大化ではなく「理念の永続性」という唯一無二の価値を創造しました。</li>
+                    </ul>
+                    <p class="mt-4 font-semibold">つまり、時価総額はビジョンを達成するための「手段」や「結果」の一つに過ぎません。最も重要なのは、経営陣がどのような「問い」を立て、その答えをどう事業として体現しようとしているかなのです。良い問いこそが、良い事業成果への出発点となります。</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="framework" class="tab-content hidden bg-gray-800 rounded-xl shadow-2xl p-8 border border-gray-700 text-gray-300">
+            <h2 class="text-3xl font-bold text-white mb-6">思考のフレームワーク：「問い」から始める事業設計</h2>
+            <p class="mb-6">良い事業成果は、優れたタスク管理や機能設計から生まれるのではありません。すべては、本質的な「問い（論点）」の設定から始まります。テスラとパタゴニアの例は、このフレームワークの重要性を示しています。</p>
+            <div class="space-y-6">
+                <div class="p-5 rounded-lg bg-gray-900 border border-blue-500"><h3 class="text-xl font-bold text-blue-400">1. 論点 (Issue / The Right Question)</h3><p class="mt-2">解決すべき最も重要で本質的な「問い」は何か？</p><ul class="list-disc list-inside text-sm text-gray-400 mt-2 space-y-1"><li><strong class="text-white">例（テスラ）:</strong> どうすれば持続可能なエネルギーへ移行できるか？</li><li><strong class="text-white">例（パタゴニア）:</strong> どうすればビジネスは地球を救う力になれるか？</li><li><strong class="text-red-400">悪い例:</strong> どうすればEVの販売台数を増やせるか？ / どうすればリサイクル素材のTシャツが売れるか？</li></ul><p class="mt-3 text-cyan-300 font-semibold">この最初の問いの質とスケールが、以降のすべての活動の天井を決定します。</p></div>
+                <div class="text-center text-2xl font-bold text-gray-500">▼</div>
+                <div class="p-5 rounded-lg bg-gray-900 border border-purple-500"><h3 class="text-xl font-bold text-purple-400">2. サブ論点 (Sub-issues)</h3><p class="mt-2">その大きな問いに答えるために、クリアすべき具体的な課題は何か？</p><ul class="list-disc list-inside text-sm text-gray-400 mt-2 space-y-1"><li><strong class="text-white">例（テスラ）:</strong> ①EVは魅力的でなければならない。②充電の不安をなくさなければならない。③コストを劇的に下げる必要がある。</li><li><strong class="text-white">例（パタゴニア）:</strong> ①製品は長持ちしなければ意味がない。②消費者に使い捨てさせない文化が必要だ。③会社の理念が利益追求で歪んではならない。</li></ul></div>
+                <div class="text-center text-2xl font-bold text-gray-500">▼</div>
+                <div class="p-5 rounded-lg bg-gray-900 border border-yellow-500"><h3 class="text-xl font-bold text-yellow-400">3. タスク設計 (Task Design)</h3><p class="mt-2">サブ論点を解決するための、具体的なアクションプラン（機能や施策）は何か？</p><ul class="list-disc list-inside text-sm text-gray-400 mt-2 space-y-1"><li><strong class="text-white">例（テスラ）:</strong> → デザイン性の高い車両開発、スーパーチャージャー網の構築、ギガファクトリーの建設。</li><li><strong class="text-white">例（パタゴニア）:</strong> → 修理プログラム（Worn Wear）の提供、環境団体への寄付（1%）、会社の所有権放棄。</li></ul><p class="mt-3 text-cyan-300 font-semibold">「論点」が正しく設定されていれば、ここで生まれるタスクは表層的ではなく、必然的かつ強力なものになります。</p></div>
+                <div class="text-center text-2xl font-bold text-gray-500">▼</div>
+                <div class="p-5 rounded-lg bg-gray-900 border border-green-500"><h3 class="text-xl font-bold text-green-400">4. スケジュール設計 (Schedule Design / Master Plan)</h3><p class="mt-2">タスクをどのような順序と時間軸で実行していくか？（マスタープラン）</p><ul class="list-disc list-inside text-sm text-gray-400 mt-2 space-y-1"><li><strong class="text-white">テスラ、パタゴニア共に、長期的で段階的なマスタープランを持っています。</strong></li></ul><p class="mt-3 text-cyan-300 font-semibold">優れた問いから生まれたマスタープランは、単なる実行計画ではなく、世界を惹きつける強力な物語（ナラティブ）となります。</p></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- フッター -->
+    <footer class="text-center p-6 mt-8 text-gray-500 text-sm">
+        <p>この分析は公開情報に基づき作成されたものであり、特定の投資を推奨するものではありません。</p>
+        <p>&copy; 2024 Vision & Value Analysis</p>
+    </footer>
+
+    <!-- タブ切り替えのためのJavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-button');
+            const navSelect = document.getElementById('nav-select');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            // タブを切り替える関数
+            function switchTab(tabId) {
+                // すべてのコンテンツを非表示に
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                // すべてのボタンのアクティブスタイルを解除
+                navButtons.forEach(button => {
+                    button.classList.remove('bg-blue-600');
+                    button.classList.add('hover:bg-gray-700');
+                });
+
+                // 対象のコンテンツを表示
+                document.getElementById(tabId).classList.remove('hidden');
+                // 対象のボタンにアクティブスタイルを適用
+                const activeButton = document.querySelector(`.nav-button[data-tab="${tabId}"]`);
+                if (activeButton) {
+                    activeButton.classList.add('bg-blue-600');
+                    activeButton.classList.remove('hover:bg-gray-700');
+                }
+                
+                // モバイル用セレクトボックスの値も更新
+                navSelect.value = tabId;
+            }
+
+            // デスクトップ用ボタンのクリックイベント
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    switchTab(button.dataset.tab);
+                });
+            });
+
+            // モバイル用セレクトボックスの変更イベント
+            navSelect.addEventListener('change', (e) => {
+                switchTab(e.target.value);
+            });
+
+            // 初期表示タブを設定
+            switchTab('analysis');
+        });
+    </script>
+</body>
+</html>

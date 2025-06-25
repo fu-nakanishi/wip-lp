@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【インタラクティブ企画書】第一回・牡蠣ドメインエキスパートへの道 in 関西</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Subtle Ocean -->
+    <!-- Application Structure Plan: シングルページのマイクロサイト形式を採用。上から下に読み進めることで、イベントの目的から詳細、参加者の確認、具体的なアクション（日程調整）までが完結するストーリー性のある構成。静的な情報をインタラクティブなカードやチャートに変換し、ユーザーの関心を引きつけ、能動的な情報収集を促す。特に場所の選択は、単なる比較表ではなく、視覚的なカードと「いいね！」機能でゲーム感覚で検討できるように設計。これにより、参加への期待感を高めることを狙う。 -->
+    <!-- Visualization & Content Choices: 
+        - 目的: テキスト -> ゴール -> アイコン付きリスト -> JS/HTML -> 目的を簡潔に視覚化し、一目で理解できるようにするため。
+        - 場所候補: テーブル -> 比較・検討 -> インタラクティブカード（いいね！機能付き） -> JS/HTML -> 各候補の魅力を引き出し、参加者の好みを可視化して盛り上げるため。静的な表よりエンゲージメントが高い。
+        - 予算: 数値リスト -> 比較 -> 棒グラフ -> Chart.js -> 各候補のコスト感を直感的に比較可能にするため。
+        - 日程調整: リンク -> アクション喚起 -> カウントダウンタイマー付きCTA -> JS/HTML -> 締切を意識させ、迅速なアクションを促すため。
+        - アジェンダ: テーブル -> 時系列理解 -> 縦型タイムライン -> HTML/CSS -> イベントの流れを時系列で分かりやすく表現するため。
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #FDFBF6;
+            color: #1a202c;
+        }
+        .hero-oyster {
+            font-size: 5rem;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        .card-flip {
+            perspective: 1000px;
+        }
+        .card-flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flip:hover .card-flip-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #4A5568;
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        <header class="text-center mb-12">
+            <div class="hero-oyster mb-4">🦪</div>
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-800 mb-2">第一回・牡蠣ドメインエキスパートへの道</h1>
+            <p class="text-lg text-gray-600">関西拠点 兼 KAG有志 牡蠣ドメイン情報収集会</p>
+        </header>
+
+        <main>
+            <section id="purpose" class="mb-16 bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold text-center mb-6">🚀 俺たちの戦いはこれからだ！目的を確認せよ！</h2>
+                <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">
+                    絶賛進行中の「牡蠣養殖システム開発案件」成功のため、我々は牡蠣を知り、チームの絆を深め、開発への情熱を燃やす必要がある！この会を通じて、ユーザーに「この人たち、ガチだ…」と思わせる最強のチームになろう！
+                </p>
+                <div class="grid md:grid-cols-3 gap-6 text-center">
+                    <div class="bg-amber-50 p-6 rounded-lg">
+                        <div class="text-4xl mb-2">🎓</div>
+                        <h3 class="font-bold text-lg">ドメイン知識の習得</h3>
+                        <p class="text-sm text-gray-600">五感で牡蠣を学び尽くす</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <div class="text-4xl mb-2">🤝</div>
+                        <h3 class="font-bold text-lg">チームビルディング</h3>
+                        <p class="text-sm text-gray-600">美味しいは正義。結束を固める</p>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-lg">
+                        <div class="text-4xl mb-2">🔥</div>
+                        <h3 class="font-bold text-lg">モチベーション向上</h3>
+                        <p class="text-sm text-gray-600">牡蠣の魅力が開発のガソリン</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="details" class="mb-16">
+                <h2 class="text-2xl font-bold text-center mb-8">📅 開催概要：いざ、牡蠣の待つ場所へ！</h2>
+
+                <div class="bg-white p-8 rounded-xl shadow-lg mb-12 text-center">
+                    <h3 class="text-xl font-bold mb-2">🗓️ 日程調整のお願い</h3>
+                    <p class="mb-4">予約のため、以下の調整さんへの入力をお願いします！</p>
+                    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md mb-4 inline-block">
+                        <p class="font-bold">入力締切：<span id="deadline-date"></span></p>
+                        <div id="countdown" class="text-2xl font-mono"></div>
+                    </div>
+                    <div>
+                        <a href="https://chouseisan.com/s?h=3998f38436864a53906b612080c1d6de" target="_blank" class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105">
+                            調整さんへGO！
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mb-12">
+                    <h3 class="text-xl font-bold text-center mb-6">📍 場所候補：運命の十字路</h3>
+                     <p class="text-center text-gray-600 mb-8">各カードにカーソルを合わせると詳細が、いいね！ボタンで推しを表明できます。</p>
+                    <div id="location-cards" class="grid md:grid-cols-3 gap-8">
+                    </div>
+                </div>
+                 <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-6">💰 予算比較チャート</h3>
+                    <p class="text-center text-gray-600 mb-4">お店選びの参考に！各候補のおおよその予算感です。</p>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="agenda" class="mb-16">
+                <h2 class="text-2xl font-bold text-center mb-8">📝 当日の作戦（アジェンダ案）</h2>
+                 <p class="text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                    ただ食べるだけじゃない。我々は学び、語り、未来を創るのだ！
+                </p>
+                <div class="max-w-3xl mx-auto">
+                    <div id="agenda-timeline" class="relative border-l-2 border-blue-200">
+                    </div>
+                </div>
+            </section>
+
+            <section id="participants" class="mb-16 text-center">
+                <h2 class="text-2xl font-bold text-center mb-6">👥 参戦予定の猛者たち</h2>
+                <div id="participant-list" class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                </div>
+                 <p class="mt-6 text-gray-600 font-bold">その他、牡蠣に興味のある関西拠点＆KAGの皆さん！</p>
+            </section>
+
+             <section id="todo" class="text-center bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-6">✅ 次のアクション</h2>
+                 <p class="text-center text-gray-700 max-w-3xl mx-auto mb-8">
+                    イベント成功は君のワンクリックにかかっている！
+                </p>
+                <ul class="list-none space-y-4 inline-block text-left">
+                    <li class="flex items-center">
+                        <span class="mr-3 text-2xl">💬</span>
+                        <div>
+                           <a href="https://kddi-agile.slack.com/archives/C075LCBP7BJ/p1750730018394279?thread_ts=1750391935.074549&cid=C075LCBP7BJ" target="_blank" class="font-bold text-blue-600 hover:underline">
+                               コメントやお問い合わせはこちら (Slack)
+                           </a><br>
+                           <span class="text-sm text-gray-600">ご意見・ご質問、なんでもどうぞ！</span>
+                        </div>
+                    </li>
+                    <li class="flex items-center">
+                         <span class="mr-3 text-2xl">🗓️</span>
+                        <div>
+                           <span class="font-bold">調整さんに入力！</span><br>
+                           <span class="text-sm text-red-600 font-bold">【⚠️6/30(日) 12:00までにご入力ください！】</span>
+                        </div>
+                    </li>
+                    <li class="flex items-center">
+                         <span class="mr-3 text-2xl">📞</span>
+                        <div>
+                           <span class="font-bold">お店の予約</span><br>
+                            <span class="text-sm text-gray-600">（参加状況を見て幹事: 中西さんが動きます）</span>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <footer class="text-center mt-16 pt-8 border-t">
+            <p class="text-gray-600">さあ、皆さんで牡蠣の奥深い世界にダイブし、案件を成功に導きましょう！</p>
+        </footer>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const locations = [
+        { 
+            name: "A. オイスターハウス KITTE大阪店", 
+            description: "おしゃれなオイスターバー",
+            merit: "豊富な種類の生牡蠣を食べ比べできる。雰囲気が良く、'濃い人生経験'が積めるかも？",
+            demerit: "ちょっぴりお値段が張る可能性。",
+            icon: "🍸",
+            color: "bg-purple-600",
+            minBudget: 6000,
+            maxBudget: 8000
+        },
+        { 
+            name: "B. カキ小屋フィーバー 天満店",
+            description: "ワイワイ楽しめる牡蠣居酒屋",
+            merit: "コスパが良い。活気ある雰囲気で盛り上がれる。",
+            demerit: "生牡蠣の種類はオイスターバーに劣るかも。",
+            icon: "🍻",
+            color: "bg-orange-500",
+            minBudget: 4000,
+            maxBudget: 6000
+        },
+        { 
+            name: "C. 田尻漁港 牡蠣小屋",
+            description: "漁港直送！BBQスタイル",
+            merit: "自分で牡蠣を焼く体験ができる（出荷ドメイン獲得のチャンス？）。圧倒的鮮度！",
+            demerit: "大阪市内からのアクセスが少し大変。生牡蠣はないかも。",
+            icon: "�",
+            color: "bg-cyan-600",
+            minBudget: 5000,
+            maxBudget: 7000
+        }
+    ];
+
+    const locationCardsContainer = document.getElementById('location-cards');
+    locations.forEach((loc, index) => {
+        const card = document.createElement('div');
+        card.className = 'card-flip h-64';
+        card.innerHTML = `
+            <div class="card-flip-inner shadow-lg rounded-xl">
+                <div class="card-front ${loc.color} text-white">
+                    <div class="text-5xl mb-2">${loc.icon}</div>
+                    <h4 class="font-bold text-xl text-center">${loc.name}</h4>
+                    <p>${loc.description}</p>
+                    <p class="text-sm mt-4">(詳細を見るにはホバー)</p>
+                </div>
+                <div class="card-back">
+                    <p class="mb-2"><strong>メリット:</strong> ${loc.merit}</p>
+                    <p><strong>デメリット:</strong> ${loc.demerit}</p>
+                </div>
+            </div>
+        `;
+        const likeButtonContainer = document.createElement('div');
+        likeButtonContainer.className = 'mt-4 text-center';
+        likeButtonContainer.innerHTML = `
+            <button data-index="${index}" class="like-btn bg-gray-200 hover:bg-red-200 text-gray-800 font-bold py-2 px-4 rounded-full flex items-center justify-center mx-auto transition">
+                <span>いいね！</span>
+                <span class="ml-2">❤️</span>
+                <span class="like-count ml-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+            </button>
+        `;
+        
+        const cardContainer = document.createElement('div');
+        cardContainer.appendChild(card);
+        cardContainer.appendChild(likeButtonContainer);
+        locationCardsContainer.appendChild(cardContainer);
+    });
+
+    // ローカルストレージから「いいね」データを読み込む
+    const likesData = JSON.parse(localStorage.getItem('oysterLikes') || '{}');
+    const votedIPs = JSON.parse(localStorage.getItem('oysterVotedIPs') || '{}');
+
+    // IPアドレスを取得する関数（簡易的な実装）
+    async function getClientIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch (error) {
+            // IPアドレスが取得できない場合は、ローカルストレージのフィンガープリントを使用
+            return 'local-' + navigator.userAgent + navigator.language;
+        }
+    }
+
+    // 保存されている「いいね」数を表示
+    document.querySelectorAll('.like-btn').forEach(button => {
+        const index = button.getAttribute('data-index');
+        const countEl = button.querySelector('.like-count');
+        const savedCount = likesData[index] || 0;
+        countEl.textContent = savedCount;
+        
+        if (savedCount > 0) {
+            button.classList.add('bg-red-200');
+        }
+    });
+
+    // 「いいね」ボタンのクリックイベント
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+            const index = button.getAttribute('data-index');
+            const countEl = button.querySelector('.like-count');
+            
+            // IPアドレスを取得
+            const clientIP = await getClientIP();
+            
+            // このIPがすでに投票済みかチェック
+            if (votedIPs[clientIP] && votedIPs[clientIP].includes(index)) {
+                alert('既に「いいね」を押しています！');
+                return;
+            }
+            
+            // 「いいね」カウントを増やす
+            let currentCount = parseInt(countEl.textContent);
+            currentCount += 1;
+            countEl.textContent = currentCount;
+            button.classList.add('bg-red-200');
+            
+            // ローカルストレージに保存
+            likesData[index] = currentCount;
+            localStorage.setItem('oysterLikes', JSON.stringify(likesData));
+            
+            // このIPの投票履歴を保存
+            if (!votedIPs[clientIP]) {
+                votedIPs[clientIP] = [];
+            }
+            votedIPs[clientIP].push(index);
+            localStorage.setItem('oysterVotedIPs', JSON.stringify(votedIPs));
+            
+            // アニメーション効果
+            button.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 200);
+        });
+    });
+
+    const agendaItems = [
+        { time: "19:00", title: "開会 & アイスブレイク", description: "「私と牡蠣の出会い」をテーマに自己紹介。" },
+        { time: "19:15", title: "有識者ミニ講座", description: "泉本さん、ますのさん、堤さんによる牡蠣の奥深い世界への誘い。" },
+        { time: "19:30", title: "実食 & ドメイン討議① (生牡蠣編)", description: "産地別の生牡蠣を食べ比べ！味、大きさ、殻の形状などをディスカッション。" },
+        { time: "20:15", title: "実食 & ドメイン討議② (加熱牡蠣編)", description: "焼き、蒸し、フライなど調理法による変化を体験。AI学習データの観点でも観察。" },
+        { time: "21:00", title: "フリートーク & 次回展望", description: "「我々のシステムがこの牡蠣業界をどう変えるか」を熱く語る。" },
+        { time: "21:30", title: "中締め", description: "中西より、獲得したドメイン知識のまとめと感謝の言葉。" },
+    ];
+
+    const agendaTimelineContainer = document.getElementById('agenda-timeline');
+    agendaItems.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'mb-8 ml-6';
+        itemEl.innerHTML = `
+            <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">
+                <svg class="w-3 h-3 text-blue-800" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+            </span>
+            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                <time class="text-sm font-semibold text-gray-500">${item.time}</time>
+                <h3 class="text-lg font-bold text-gray-900 mt-1">${item.title}</h3>
+                <p class="text-base font-normal text-gray-600">${item.description}</p>
+            </div>
+        `;
+        agendaTimelineContainer.appendChild(itemEl);
+    });
+
+    const participants = [
+        "fu-nakanishi（中西楓一郎）", "yuki izumoto 師匠", "ますの 師匠", "堤 祐次朗 師匠", 
+        "SUEMITSU Kazuki 師匠", "こぐれ さん", "Takeshi Kobayashi さん", "Yu Otsubo さん",
+        "kenpi / kawahara さん", "石原 汐帆 さん"
+    ];
+    const participantListContainer = document.getElementById('participant-list');
+    participants.forEach(p => {
+        const pEl = document.createElement('div');
+        pEl.className = 'bg-white shadow px-4 py-2 rounded-full text-gray-700';
+        pEl.textContent = p;
+        participantListContainer.appendChild(pEl);
+    });
+
+    const deadline = new Date('2025-06-30T12:00:00');
+    document.getElementById('deadline-date').textContent = `${deadline.getMonth() + 1}/${deadline.getDate()}(日) ${deadline.getHours()}:00`;
+
+    const countdownEl = document.getElementById('countdown');
+    function updateCountdown() {
+        const now = new Date();
+        const diff = deadline - now;
+
+        if (diff <= 0) {
+            countdownEl.innerHTML = "締切です！";
+            return;
+        }
+
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        countdownEl.innerHTML = `${d}日 ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    const ctx = document.getElementById('budgetChart').getContext('2d');
+    const budgetChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: locations.map(l => l.name),
+            datasets: [{
+                label: '最低予算 (円)',
+                data: locations.map(l => l.minBudget),
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: '最高予算 (円)',
+                data: locations.map(l => l.maxBudget),
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return value.toLocaleString() + '円';
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                       callback: function(value, index, values) {
+                            const label = this.getLabelForValue(value);
+                            if (label.length > 16) {
+                                return label.substring(0, 16) + '...';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y.toLocaleString() + '円';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

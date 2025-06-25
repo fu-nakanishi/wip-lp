@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>デジタルオイスター：インタラクティブ・ビジョン・レポート</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The SPA is structured as a persuasive narrative for potential new oyster farmers and partners. It starts by establishing the "Problem" (the industry's structural crisis) to create urgency. Then, it pivots to the "Solution" by introducing the "Digital Oyster" platform. The core of the app breaks down this solution into three user-centric value pillars: "Customer Development," "Production & Quality," and "Trust & Traceability," using interactive tabs to manage complexity. Finally, it demonstrates viability through the "Business Model & Roadmap" section, showing a clear path to execution. This narrative flow—from problem to solution to viability—is designed to guide the user from awareness to consideration and, ultimately, to action. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Industry crisis (aging, declining workforce) -> Goal: Visualize the urgency -> Viz: Animated Stat Cards -> Interaction: Numbers count up on scroll -> Justification: Creates a more dynamic and impactful presentation of stark data than a static table.
+        - Report Info: Core platform features (CRM, D2C, Quality Tiers, B2B Marketplace, IoT, Blockchain) -> Goal: Explain a complex system clearly -> Viz: Tabbed Interface -> Interaction: User clicks tabs to switch content -> Justification: Breaks down the multifaceted platform into logical, digestible themes, preventing information overload and allowing self-paced exploration.
+        - Report Info: SaaS-Enabled Marketplace model -> Goal: Explain the business model's virtuous cycle -> Viz: HTML/CSS Diagram -> Interaction: Static -> Justification: A simple visual diagram is more effective at communicating a cyclical relationship than text alone.
+        - Report Info: Phased rollout plan -> Goal: Show a credible execution plan -> Viz: HTML/CSS Timeline -> Interaction: Static -> Justification: A timeline visually organizes chronological information, making the strategic plan easy to follow and understand.
+        - Report Info: Support business P&L -> Goal: Demonstrate financial viability of the support ecosystem -> Viz: Bar Chart -> Interaction: Hover for details -> Justification: A bar chart effectively compares revenue, costs, and profit over time, validating the business model.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Noto+Sans+JP', sans-serif;
+            background-color: #F8F9FA;
+            color: #212529;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .text-shadow {
+            text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .bg-ocean-gradient {
+            background: linear-gradient(to bottom, #E0F7FA, #FFFFFF);
+        }
+        .bg-sand-gradient {
+            background: linear-gradient(to bottom, #FDFBF8, #FFFFFF);
+        }
+        .nav-link.active {
+            color: #007BFF;
+            font-weight: 700;
+            border-bottom: 2px solid #007BFF;
+        }
+        .tab-button.active {
+            background-color: #007BFF;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            max-height: 400px;
+            width: 100%;
+            max-width: 700px;
+        }
+        .kpi-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-align: center;
+            border: 1px solid #E9ECEF;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white/90 backdrop-blur-sm sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-800">デジタルオイスター</h1>
+            <div class="hidden md:flex space-x-6 lg:space-x-8 text-gray-600">
+                <a href="#challenge" class="nav-link pb-1 transition-colors duration-300 hover:text-blue-600">課題</a>
+                <a href="#solution" class="nav-link pb-1 transition-colors duration-300 hover:text-blue-600">解決策</a>
+                <a href="#features" class="nav-link pb-1 transition-colors duration-300 hover:text-blue-600">主な機能</a>
+                <a href="#roadmap" class="nav-link pb-1 transition-colors duration-300 hover:text-blue-600">未来像</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="bg-ocean-gradient py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-6xl font-bold text-gray-800 mb-4 text-shadow">日本の牡蠣養殖業に、<br>デジタルの力で、持続可能な未来を。</h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                    私たちは、テクノロジーを駆使して新規参入者が直面する「情報の壁」「販路の壁」「品質評価の壁」を打ち破り、日本の豊かな海の恵みを次世代へと繋ぐための戦略的インフラを構築します。
+                </p>
+            </div>
+        </section>
+
+        <!-- The Challenge Section -->
+        <section id="challenge" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 md:mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-800">静かなる危機：日本の漁業が直面する現実</h3>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">日本の漁業は、就業者の急激な減少と高齢化という「人口動態の崖」に直面しています。これは、地域経済と食文化の基盤を揺るがす構造的課題です。</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="kpi-card">
+                        <p class="text-5xl font-bold text-blue-600" id="stat-workers">0</p>
+                        <p class="font-bold text-lg mt-2">漁業就業者数</p>
+                        <p class="text-gray-500 text-sm">1960年代の約70万人から激減</p>
+                    </div>
+                    <div class="kpi-card">
+                        <p class="text-5xl font-bold text-blue-600" id="stat-age">0<span class="text-3xl">%</span></p>
+                        <p class="font-bold text-lg mt-2">65歳以上の割合</p>
+                        <p class="text-gray-500 text-sm">産業の高齢化が深刻な水準に</p>
+                    </div>
+                    <div class="kpi-card">
+                        <p class="text-5xl font-bold text-blue-600" id="stat-newcomers">0<span class="text-3xl">%</span></p>
+                        <p class="font-bold text-lg mt-2">非漁家出身の新規就業者</p>
+                        <p class="text-gray-500 text-sm">未来を担う彼らは支援を必要としている</p>
+                    </div>
+                </div>
+                <div class="mt-12 bg-gray-100 p-8 rounded-lg">
+                    <h4 class="text-2xl font-bold text-center text-gray-800 mb-6">新規参入者を阻む「三重の壁」</h4>
+                    <div class="grid md:grid-cols-3 gap-6 text-left">
+                        <div class="bg-white p-4 rounded-md shadow-sm">
+                            <h5 class="font-bold text-blue-700">1. 資金と規制の壁</h5>
+                            <p class="text-sm text-gray-600 mt-2">数百万円の初期投資、複雑な許認可プロセス、漁協加入といった財務的・制度的ハードル。</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-md shadow-sm">
+                            <h5 class="font-bold text-blue-700">2. 知識とスキルの壁</h5>
+                            <p class="text-sm text-gray-600 mt-2">養殖技術から経営管理まで、習得すべき専門知識が膨大で、学習曲線が非常に急峻。</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-md shadow-sm">
+                            <h5 class="font-bold text-blue-700">3. 販路と市場の壁</h5>
+                            <p class="text-sm text-gray-600 mt-2">「生産しても売る相手がいない」という最大の課題。伝統的な流通網へのアクセスが困難。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Solution Section -->
+        <section id="solution" class="py-16 md:py-24 bg-sand-gradient">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 md:mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-800">解決策：デジタル事業インキュベーター「デジタルオイスター」</h3>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">私たちは、これらの構造的課題を解決するため、SaaSとマーケットプレイスを融合したハイブリッドモデルのデジタルプラットフォームを提案します。</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+                    <h4 class="text-2xl font-bold text-center text-gray-800 mb-8">SaaSが可能にするマーケットプレイスの好循環</h4>
+                    <div class="flex flex-col md:flex-row items-center justify-around space-y-8 md:space-y-0">
+                        <!-- Step 1 -->
+                        <div class="text-center max-w-xs">
+                            <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-4">📈</div>
+                            <h5 class="font-bold text-lg">1. SaaSで生産者を支援</h5>
+                            <p class="text-sm text-gray-600">生産者は経営効率化のため、CRMや生産管理ツール(SaaS)を導入します。</p>
+                        </div>
+                        <div class="text-2xl text-gray-400 hidden md:block">&rarr;</div>
+                        <div class="text-2xl text-gray-400 md:hidden">&darr;</div>
+                        <!-- Step 2 -->
+                        <div class="text-center max-w-xs">
+                            <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-4">📦</div>
+                            <h5 class="font-bold text-lg">2. 高品質な供給が蓄積</h5>
+                            <p class="text-sm text-gray-600">SaaS利用を通じて、データに裏付けられた高品質な牡蠣の在庫情報がプラットフォームに集まります。</p>
+                        </div>
+                        <div class="text-2xl text-gray-400 hidden md:block">&rarr;</div>
+                        <div class="text-2xl text-gray-400 md:hidden">&darr;</div>
+                        <!-- Step 3 -->
+                        <div class="text-center max-w-xs">
+                           <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-3xl mb-4">🛒</div>
+                            <h5 class="font-bold text-lg">3. 買い手を惹きつける市場</h5>
+                            <p class="text-sm text-gray-600">豊富な供給がマーケットプレイスの魅力を高め、品質を求める買い手が集まります。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 md:mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-800">プラットフォームの主な機能</h3>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">「デジタルオイスター」は、新規参入者の事業の全フェーズを支援する包括的な機能を提供します。</p>
+                </div>
+                <!-- Tabs -->
+                <div class="flex justify-center mb-8 flex-wrap">
+                    <button class="tab-button active text-lg font-semibold py-3 px-6 rounded-full transition-all duration-300 m-2" data-tab="sales">顧客開発・販売支援</button>
+                    <button class="tab-button text-lg font-semibold py-3 px-6 rounded-full transition-all duration-300 m-2" data-tab="production">生産強化・品質管理</button>
+                    <button class="tab-button text-lg font-semibold py-3 px-6 rounded-full transition-all duration-300 m-2" data-tab="trust">信頼構築・物流</button>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="tab-content" class="bg-gray-50 p-6 md:p-10 rounded-lg border">
+                    <!-- Sales Tab -->
+                    <div class="tab-pane active" id="sales-content">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-6">売れる相手がいない、を過去にする。</h4>
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">B2B顧客エンジン</h5>
+                                <p class="text-sm text-gray-600 mt-2">統合CRM機能で見込み客の開拓から既存顧客との関係深化までを体系的に管理。営業活動を効率化し、ノウハウの属人化を防ぎます。</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">D2Cチャネル構築</h5>
+                                <p class="text-sm text-gray-600 mt-2">専門知識なしで自身のオンラインストアを開設。ブランドストーリーを発信し、サブスクリプションモデルで安定収益を確保します。</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">市場インテリジェンス</h5>
+                                <p class="text-sm text-gray-600 mt-2">リアルタイムの価格動向や需要データを分析・可視化。データに基づいた戦略的な価格設定と生産計画を可能にします。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Production Tab -->
+                    <div class="tab-pane hidden" id="production-content">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-6">品質を、科学する。</h4>
+                         <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">デジタル品質規格</h5>
+                                <p class="text-sm text-gray-600 mt-2">AI搭載センサーを活用し、安全性・物理的属性に加え、「うま味」や「鮮度」といった食味までを客観的データで標準化。品質の価値を証明します。</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">B2B電子取引市場</h5>
+                                <p class="text-sm text-gray-600 mt-2">標準化された品質データを基盤に、固定価格、オークション、RFQなど多様な形式で取引。品質が正当に評価される市場を創出します。</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">スマート生産管理</h5>
+                                <p class="text-sm text-gray-600 mt-2">IoTセンサーで漁場環境をリアルタイム監視し、リスクを予知。作業計画や在庫・成長追跡をデジタル化し、生産性を最大化します。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Trust Tab -->
+                    <div class="tab-pane hidden" id="trust-content">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-6">信頼を、届ける。</h4>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">ブロックチェーン・トレーサビリティ</h5>
+                                <p class="text-sm text-gray-600 mt-2">種苗から食卓まで、全ての履歴を改ざん不可能なブロックチェーンに記録。QRコード一つで完全な透明性を提供し、ブランド価値を高めます。</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-lg shadow-sm">
+                                <h5 class="font-bold text-lg text-blue-700">統合物流ハブ</h5>
+                                <p class="text-sm text-gray-600 mt-2">大手物流企業と連携し、集荷から配送追跡までをワンストップで管理。共同配送により物流コストを削減し、「2024年問題」に対応します。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap & Vision Section -->
+        <section id="roadmap" class="py-16 md:py-24 bg-sand-gradient">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 md:mb-16">
+                    <h3 class="text-3xl md:text-4xl font-bold text-gray-800">事業計画と未来像</h3>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">私たちは、壮大なビジョンを実行可能な計画に落とし込み、段階的なアプローチで日本の牡蠣養殖業の変革を実現します。</p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+                    <!-- Roadmap -->
+                    <div class="relative">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-8">段階的実行ロードマップ</h4>
+                        <div class="relative pl-8">
+                             <!-- The timeline line -->
+                            <div class="absolute top-0 left-0 h-full w-0.5 bg-gray-300"></div>
+                            
+                            <!-- Item 1 -->
+                            <div class="relative mb-12">
+                                <div class="absolute -left-10 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full border-4 border-blue-600"></div>
+                                <h5 class="font-bold text-lg text-blue-700">フェーズ1 (1年目): MVP構築と実証</h5>
+                                <p class="text-sm text-gray-600 mt-2">中核となるSaaSとシンプルなマーケットプレイスを構築。パイロットユーザーと共に価値仮説を検証し、フィードバックループを確立します。</p>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="relative mb-12">
+                                <div class="absolute -left-10 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full border-4 border-blue-600"></div>
+                                <h5 class="font-bold text-lg text-blue-700">フェーズ2 (2-3年目): 機能拡張と規模拡大</h5>
+                                <p class="text-sm text-gray-600 mt-2">D2C機能や市場インテリジェンスを追加し、主要産地へ展開。客観的品質データの試験導入を開始し、ユーザーベースを拡大します。</p>
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="relative">
+                                <div class="absolute -left-10 top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full border-4 border-blue-600"></div>
+                                <h5 class="font-bold text-lg text-blue-700">フェーズ3 (4年目以降): エコシステムの完成</h5>
+                                <p class="text-sm text-gray-600 mt-2">ブロックチェーンや統合物流ハブを本格実装。業界のデジタルインフラとして、国内のデファクトスタンダードと海外展開を目指します。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Financials -->
+                    <div>
+                        <h4 class="text-2xl font-bold text-gray-800 mb-8">支援事業の成長モデル (3カ年損益予測)</h4>
+                        <p class="text-sm text-gray-600 mb-4">新規参入者の成功が、支援事業自体の成長を牽引します。これは、産業全体で持続可能なエコシステムを構築できることを示す財務モデルです。</p>
+                        <div class="bg-white p-6 rounded-lg shadow-md border">
+                            <div class="chart-container">
+                                <canvas id="financialsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-12 text-center">
+            <h3 class="text-2xl font-bold">未来の担い手、求む。</h3>
+            <p class="mt-4 max-w-2xl mx-auto text-gray-300">デジタルオイスターは、日本の牡蠣養殖業に新たな歴史を刻む挑戦です。<br>このビジョンに共感し、共に未来を創るパートナー（新規参入希望者、漁協、自治体、テクノロジー企業）を募集しています。</p>
+            <div class="mt-8">
+                <a href="#" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-700 transition-colors duration-300">お問い合わせ</a>
+            </div>
+             <p class="text-xs text-gray-500 mt-12">本アプリケーションは、「デジタルオイスター：日本の牡蠣養殖産業再生に向けたシステム設計書」および「日本の牡蠣養殖事業：新規参入の動向と事業支援の可能性」レポートに基づき作成されました。</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Animated Stats
+        const stats = [
+            { id: 'stat-workers', endValue: 123000, isK: true },
+            { id: 'stat-age', endValue: 45, isK: false },
+            { id: 'stat-newcomers', endValue: 80, isK: false }
+        ];
+
+        const animateStat = (entry, observer) => {
+            const el = entry.target;
+            const stat = stats.find(s => s.id === el.id);
+            if (!stat || el.classList.contains('animated')) return;
+
+            el.classList.add('animated');
+            let start = 0;
+            const end = stat.endValue;
+            const duration = 2000;
+            const stepTime = Math.abs(Math.floor(duration / end));
+            
+            let current = 0;
+            const timer = setInterval(() => {
+                current += Math.ceil(end / (duration/16));
+                if (current >= end) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                if (stat.isK) {
+                    el.textContent = Math.floor(current/1000) + 'k+';
+                } else {
+                    el.textContent = current.toLocaleString();
+                }
+            }, 16);
+            observer.unobserve(el);
+        };
+
+        const statObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStat(entry, observer);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        stats.forEach(stat => {
+            const el = document.getElementById(stat.id);
+            if (el) statObserver.observe(el);
+        });
+
+        // Tabs
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                tabPanes.forEach(pane => {
+                    pane.classList.add('hidden');
+                });
+                document.getElementById(`${button.dataset.tab}-content`).classList.remove('hidden');
+            });
+        });
+
+        // Financials Chart
+        const financialCtx = document.getElementById('financialsChart');
+        if (financialCtx) {
+            new Chart(financialCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['1年目', '2年目', '3年目'],
+                    datasets: [{
+                        label: '収益合計',
+                        data: [7.6, 19.3, 31.6],
+                        backgroundColor: 'rgba(0, 123, 255, 0.6)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: '営業経費合計',
+                        data: [7.0, 11.1, 15.6],
+                        backgroundColor: 'rgba(255, 193, 7, 0.6)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: '当期純利益',
+                        data: [0.28, 5.43, 10.71],
+                        backgroundColor: 'rgba(40, 167, 69, 0.6)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '金額 (百万円)'
+                            },
+                             ticks: {
+                                callback: function(value) {
+                                    return value + 'M';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw.toFixed(2)} 百万円`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Active Nav Link on Scroll
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('main section');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-50% 0px -50% 0px',
+            threshold: 0
+        };
+
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+    });
+    </script>
+</body>
+</html>

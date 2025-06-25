@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知覚する海へ：リブルとKDDIの共創ビジョン</title>
+    <!-- Chosen Palette: Oceanic Tech -->
+    <!-- Application Structure Plan: The SPA is designed as a narrative journey, guiding the user from the "Why" to the "How" and "What." It starts with the core vision (The Big Question), moves to the underlying problems (The Challenge), presents the innovative solution (The Autonomous Aquaculture Platform - AAP), details the phased execution (The Master Plan), and finally proves its viability (The Economics). This top-down, story-driven architecture is chosen over a linear report structure to make the complex proposal more engaging, digestible, and persuasive for stakeholders like investors or internal decision-makers. Key interactions like clickable diagrams, an interactive timeline, and a comparative chart are used to manage information density and encourage exploration. -->
+    <!-- Visualization & Content Choices: 
+        - The Big Question: A prominent hero section with dynamic text to establish the core vision immediately. Goal: Inspire. Method: HTML/CSS.
+        - Correlation Diagram: An image visually explaining the interlinked challenges of the aquaculture industry. Goal: Inform/Orient. Method: Static Image. Justification: Provides high-level context before diving into details.
+        - SWOT Analysis (Table 1): An interactive two-column layout to compare ReBlue & KDDI. Goal: Compare. Method: HTML/JS toggle. Justification: Allows direct comparison of the partners' synergistic strengths.
+        - AAP Core Loop: An interactive diagram explaining the Sense->Analyze->Act->Learn cycle. Goal: Organize/Explain. Method: HTML/CSS/JS with clickable nodes. Justification: Deconstructs a complex technical system into understandable, interactive components.
+        - Master Plan (Table 3): An interactive horizontal timeline showing the 3 phases. Goal: Show Change/Organize. Method: HTML/JS with clickable phases. Justification: Manages information density and visually communicates the long-term strategic roadmap.
+        - Techno-Economic Analysis (Table 4): An interactive bar chart comparing traditional vs. AAP-enabled farming. Goal: Compare/Inform. Method: Chart.js with JS controls. Justification: Makes complex financial data easy to digest and highlights the compelling economic benefits.
+        - Value Proposition: Icon-driven cards for different stakeholders. Goal: Inform. Method: HTML/CSS. Justification: Quickly communicates key benefits.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .bg-ocean-deep { background-color: #003366; }
+        .text-ocean-deep { color: #003366; }
+        .bg-ocean-light { background-color: #e0f2fe; }
+        .text-teal-accent { color: #0d9488; }
+        .bg-teal-accent { background-color: #0d9488; }
+        .nav-link {
+            transition: color 0.3s ease, border-bottom-color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #0d9488;
+            border-bottom-color: #0d9488;
+        }
+        .phase-node {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .phase-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 100%;
+            max-width: 800px;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex justify-between items-center">
+                <a href="#hero" class="text-xl md:text-2xl font-bold text-ocean-deep">知覚する海へ</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#vision" class="nav-link">ビジョン</a>
+                    <a href="#challenge" class="nav-link">課題</a>
+                    <a href="#solution" class="nav-link">ソリューション</a>
+                    <a href="#plan" class="nav-link">事業計画</a>
+                    <a href="#economics" class="nav-link">経済性</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-slate-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4">
+                <a href="#vision" class="block py-2 px-4 text-sm nav-link">ビジョン</a>
+                <a href="#challenge" class="block py-2 px-4 text-sm nav-link">課題</a>
+                <a href="#solution" class="block py-2 px-4 text-sm nav-link">ソリューション</a>
+                <a href="#plan" class="block py-2 px-4 text-sm nav-link">事業計画</a>
+                <a href="#economics" class="block py-2 px-4 text-sm nav-link">経済性</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="bg-ocean-deep text-white min-h-[60vh] flex items-center">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight">知覚する海へ</h1>
+                <p class="text-lg md:text-2xl text-slate-300 mb-8">リブルとKDDIが共創する、自律型水産養殖プラットフォームの未来</p>
+                <div class="bg-white/10 p-6 rounded-xl max-w-4xl mx-auto">
+                    <p class="text-xl md:text-2xl font-bold">事業の核心を成す「問い」</p>
+                    <p class="mt-2 text-slate-200">もし、海そのものが自らを監視し、最適化し、再生できるとしたら？<br>そのための知覚と神経系、そして脳を、我々は構築できるか？</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="vision" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-ocean-deep">変革的なビジョンの設定</h2>
+                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">事業の成否は「問い」の質で決まる。我々はオペレーション改善の先にある、産業全体の変革を目指します。</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-red-50 border-l-4 border-red-400 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-red-800 mb-2">これまでの問い（漸進的）</h3>
+                        <p class="text-red-700">「ICTを使って、いかに牡蠣養殖を効率化できるか？」</p>
+                        <p class="mt-3 text-sm text-red-600">これは重要ですが、既存事業の「改善」に留まります。リブルの労働集約性やスケーラビリティの問題を根本的には解決しません。</p>
+                    </div>
+                    <div class="bg-teal-50 border-l-4 border-teal-500 p-6 rounded-lg">
+                        <h3 class="text-xl font-bold text-teal-800 mb-2">新たな問い（変革的）</h3>
+                        <p class="text-teal-700">「海が自らを知覚し最適化するためのOSを、我々は構築できるか？」</p>
+                        <p class="mt-3 text-sm text-teal-600">事業を「牡蠣養殖」から「海洋生態系マネジメント」へ再定義し、スケーラブルなテクノロジービジネスを創造します。</p>
+                    </div>
+                </div>
+                <div class="mt-12 text-center">
+                     <p class="text-slate-600">このビジョンは、パーパスを競争優位に変えた<b class="text-teal-accent">パタゴニア</b>と、マスタープランで未来を創造する<b class="text-teal-accent">テスラ</b>の戦略から着想を得ています。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="challenge" class="py-16 md:py-24 bg-slate-50">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-ocean-deep">戦略的合流点：2社の課題と機会</h2>
+                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">リブルの深い現場知見と、KDDIの広範な技術力。両社の非対称な強みが、互いの課題を解決し、巨大な機会を創出します。</p>
+                </div>
+                
+                <div class="my-12">
+                    <h3 class="text-xl font-bold text-center text-ocean-deep mb-4">課題の相関図：複雑に絡み合う水産業のボトルネック</h3>
+                    <div class="bg-white p-4 rounded-xl shadow-lg max-w-4xl mx-auto">
+                        <img src="./issue_ribule_kddi.png" alt="水産業の課題相関図" class="w-full h-auto rounded-md" onerror="this.onerror=null; this.src='https://placehold.co/1200x800/e2e8f0/475569?text=Diagram+Not+Found';">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-center text-blue-800 mb-4">リブル：海の職人技術者</h3>
+                        <div class="space-y-4">
+                            <div><strong class="text-green-600">強み:</strong> 高品質な牡蠣の生産技術とブランド力。困難な環境での養殖を可能にする深いドメイン知識。</div>
+                            <div><strong class="text-red-600">課題:</strong> 労働集約的でスケールしにくいビジネスモデル。データ活用の限界と資本力。</div>
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <h3 class="text-2xl font-bold text-center text-orange-600 mb-4">KDDI：コネクテッド社会の設計者</h3>
+                        <div class="space-y-4">
+                            <div><strong class="text-green-600">強み:</strong> 5G/衛星/IoTの通信網、AI/ドローンへの巨額投資、豊富な資金力と地方創生実績。</div>
+                            <div><strong class="text-red-600">課題:</strong> 一次産業のような新規領域における現場知見と実用化の場の不足。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 bg-white p-8 rounded-xl shadow-md text-center">
+                    <h4 class="text-xl font-bold text-ocean-deep">既存協業の成果と限界</h4>
+                    <p class="mt-2 text-slate-600">「あまべ牡蠣プロジェクト」は、ICT活用の有効性を証明した価値ある実証実験でした。しかし、それは「監視」システムに留まり、業界を変革する「予測」と「自動化」には至っていません。この成功と限界の認識が、次なる飛躍の出発点です。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-ocean-deep">最適解：自律型水産養殖プラットフォーム (AAP)</h2>
+                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">海の「デジタルツイン」を構築し、<b class="text-teal-accent">知覚→分析→実行→学習</b>のループを自律的に回す、海洋のオペレーティングシステムです。</p>
+                </div>
+
+                <div id="aap-diagram" class="relative max-w-3xl mx-auto p-4">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-48 h-48 md:w-64 md:h-64 bg-ocean-light rounded-full flex items-center justify-center text-center p-4">
+                            <span id="diagram-center-text" class="text-ocean-deep font-bold text-lg transition-opacity duration-300">AAP<br>コア・ループ</span>
+                        </div>
+                    </div>
+                    <div class="relative grid grid-cols-2 gap-4 md:gap-8">
+                        <div class="diagram-node col-start-1 row-start-1 text-right" data-text="IoTセンサー、水中ドローン、eDNA分析が、環境と生物データをリアルタイムで収集。海の『五感』となります。">
+                            <h4 class="font-bold text-xl">知覚 <span class="text-teal-accent">Sense</span></h4>
+                            <p class="text-sm text-slate-500">リアルタイムデータ収集</p>
+                        </div>
+                        <div class="diagram-node col-start-2 row-start-1 text-left" data-text="5G/衛星通信で送られたデータをAIが解析。斃死リスクや最適成長条件を予測する『脳』の役割を担います。">
+                            <h4 class="font-bold text-xl"><span class="text-teal-accent">Analyze</span> 分析</h4>
+                            <p class="text-sm text-slate-500">AIによる未来予測</p>
+                        </div>
+                        <div class="diagram-node col-start-1 row-start-2 text-right" data-text="予測に基づき、水空合体ドローンや自動システムが物理的な介入（カゴ移動、メンテナンス）を実行する『手足』です。">
+                            <h4 class="font-bold text-xl">実行 <span class="text-teal-accent">Act</span></h4>
+                            <p class="text-sm text-slate-500">ロボティクスによる自動化</p>
+                        </div>
+                        <div class="diagram-node col-start-2 row-start-2 text-left" data-text="実行結果は再びデータとしてフィードバックされ、AIモデルの精度が継続的に向上。システムが自己進化します。">
+                            <h4 class="font-bold text-xl"><span class="text-teal-accent">Learn</span> 学習</h4>
+                            <p class="text-sm text-slate-500">自己学習による精度向上</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-16">
+                    <h3 class="text-2xl font-bold text-center mb-8 text-ocean-deep">提供価値：「プログラマティック・シーフード」の創造</h3>
+                    <div class="grid md:grid-cols-3 gap-8 text-center">
+                        <div class="bg-slate-50 p-6 rounded-lg">
+                            <div class="text-4xl mb-2">🏭</div>
+                            <h4 class="font-bold text-lg mb-2">生産者へ</h4>
+                            <p class="text-slate-600">斃死リスクの抜本的低減、人件費削減、収益最大化を実現します。</p>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-lg">
+                            <div class="text-4xl mb-2">👤</div>
+                            <h4 class="font-bold text-lg mb-2">消費者へ</h4>
+                            <p class="text-slate-600">データで保証された安全性と品質、完全なトレーサビリティを提供します。</p>
+                        </div>
+                        <div class="bg-slate-50 p-6 rounded-lg">
+                            <div class="text-4xl mb-2">🌍</div>
+                            <h4 class="font-bold text-lg mb-2">社会・地球へ</h4>
+                            <p class="text-slate-600">水質浄化などの環境貢献を可視化し、ブルーカーボン等の新市場を創出します。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="plan" class="py-16 md:py-24 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-ocean-deep">マスタープラン：10年間の事業ロードマップ</h2>
+                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">研究開発から商業化、そしてグローバル展開へ。段階的アプローチで着実にビジョンを実現します。</p>
+                </div>
+
+                <div class="relative w-full overflow-x-auto pb-8">
+                    <div class="flex items-start justify-between min-w-[800px] md:min-w-0">
+                        <div class="absolute top-1/2 left-0 w-full h-1 bg-slate-300 transform -translate-y-1/2"></div>
+                        <div class="absolute top-1/2 left-0 w-full h-1 bg-teal-accent transform -translate-y-1/2 transition-all duration-500" id="progress-bar" style="width: 16.6%;"></div>
+                        
+                        <div class="flex-1 text-center relative z-10">
+                            <button class="phase-node w-24 h-24 bg-white border-4 border-teal-accent rounded-full flex items-center justify-center text-center shadow-md" data-phase="1">
+                                <span class="font-bold">Phase 1</span>
+                            </button>
+                            <p class="mt-2 font-bold">1-3年目</p>
+                        </div>
+                        <div class="flex-1 text-center relative z-10">
+                            <button class="phase-node w-24 h-24 bg-white border-4 border-slate-300 rounded-full flex items-center justify-center text-center shadow-md" data-phase="2">
+                                <span class="font-bold text-slate-500">Phase 2</span>
+                            </button>
+                            <p class="mt-2 font-bold text-slate-500">4-7年目</p>
+                        </div>
+                        <div class="flex-1 text-center relative z-10">
+                            <button class="phase-node w-24 h-24 bg-white border-4 border-slate-300 rounded-full flex items-center justify-center text-center shadow-md" data-phase="3">
+                                <span class="font-bold text-slate-500">Phase 3</span>
+                            </button>
+                            <p class="mt-2 font-bold text-slate-500">8年目以降</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="phase-details" class="mt-12 bg-white rounded-xl shadow-lg p-8 transition-all duration-500">
+                </div>
+
+            </div>
+        </section>
+
+        <section id="economics" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-ocean-deep">経済性と投資テーマ</h2>
+                    <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">AAP導入による劇的な収益性向上と、テクノロジー企業としての高い成長ポテンシャルを示します。</p>
+                </div>
+
+                <div class="bg-white p-4 md:p-8 rounded-xl shadow-lg">
+                    <div class="text-center mb-4">
+                        <h3 class="text-xl font-bold">技術経済分析：従来手法 vs AAP導入</h3>
+                        <p class="text-sm text-slate-500">（牡蠣100万個あたりの試算）</p>
+                    </div>
+                     <div class="chart-container">
+                        <canvas id="economicsChart"></canvas>
+                    </div>
+                    <div class="mt-6 p-4 bg-slate-50 rounded-lg text-sm text-slate-700 border border-slate-200">
+                        <h4 class="font-bold mb-2 text-slate-800">グラフの計算ロジック</h4>
+                        <p class="mb-2">グラフの数値は、事業計画書「表4：技術経済分析」のデータを基に以下の計算式で算出されています。</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li><strong>売上総利益</strong> = (収穫可能牡蠣数 × 牡蠣1個あたり価格) - 変動費合計</li>
+                            <li><strong>純利益</strong> = 売上総利益 - (固定費 + AAPプラットフォーム利用料)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-12 grid md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-ocean-light p-6 rounded-lg">
+                        <div class="font-bold text-4xl text-teal-accent">+117%</div>
+                        <h4 class="font-bold text-lg mt-2">純利益の増加</h4>
+                        <p class="text-sm text-slate-600">斃死率の大幅な低減と自動化によるコスト削減が利益を押し上げます。</p>
+                    </div>
+                    <div class="bg-ocean-light p-6 rounded-lg">
+                         <div class="font-bold text-4xl text-teal-accent">+25%</div>
+                        <h4 class="font-bold text-lg mt-2">販売価格プレミアム</h4>
+                        <p class="text-sm text-slate-600">データで裏付けられた安全性と品質が、高い付加価値を生み出します。</p>
+                    </div>
+                    <div class="bg-ocean-light p-6 rounded-lg">
+                         <div class="font-bold text-4xl text-teal-accent">-27%</div>
+                        <h4 class="font-bold text-lg mt-2">損益分岐点価格の低下</h4>
+                        <p class="text-sm text-slate-600">高い生産効率により、事業のリスク耐性が大幅に向上します。</p>
+                    </div>
+                </div>
+
+                 <div class="mt-12 bg-ocean-deep text-white p-8 rounded-xl shadow-md text-center">
+                    <h4 class="text-xl font-bold">投資テーマ：50億円の初期投資で未来を創造</h4>
+                    <p class="mt-2">これは単なる養殖事業への投資ではありません。グローバル市場を持つ高収益なSaaSプラットフォームを創出し、ARR（年間経常収益）ベースでの高い企業価値を目指す、テクノロジー投資です。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-slate-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>本ページは、株式会社リブルとKDDI株式会社の連携事業に関する提案レポートを基に作成されたインタラクティブな要約です。</p>
+            <p class="text-sm text-slate-400 mt-2">&copy; 2025 Joint Venture Proposal</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            const diagramNodes = document.querySelectorAll('.diagram-node');
+            const diagramCenterText = document.getElementById('diagram-center-text');
+            const originalCenterText = diagramCenterText.innerHTML;
+
+            diagramNodes.forEach(node => {
+                node.addEventListener('mouseenter', () => {
+                    diagramCenterText.style.opacity = '0';
+                    setTimeout(() => {
+                        diagramCenterText.innerHTML = `<p class="text-sm">${node.dataset.text}</p>`;
+                        diagramCenterText.style.opacity = '1';
+                    }, 200);
+                });
+                node.addEventListener('mouseleave', () => {
+                     diagramCenterText.style.opacity = '0';
+                    setTimeout(() => {
+                        diagramCenterText.innerHTML = originalCenterText;
+                        diagramCenterText.style.opacity = '1';
+                    }, 200);
+                });
+            });
+            
+            const phaseButtons = document.querySelectorAll('.phase-node');
+            const phaseDetailsContainer = document.getElementById('phase-details');
+            const progressBar = document.getElementById('progress-bar');
+            
+            const phaseData = {
+                '1': {
+                    title: 'Phase 1: 「あまべモデル2.0」システムの完成 (1-3年目)',
+                    objective: 'AAPのプロトタイプを構築・試験し、その技術的優位性と経済的実行可能性を実証する。',
+                    activities: [
+                        'リブルの養殖場を「リビングラボ」化',
+                        '全技術スタック（センサー、AI、ドローン）の導入と統合',
+                        'AIモデル学習のための独自データセット構築',
+                        '「プログラムされたシーフード」としてプレミアム牡蠣を販売'
+                    ],
+                    kpis: [
+                        '斃死率予測精度 > 90%',
+                        '人件費（監視・点検）50%削減',
+                        '斃死率を業界平均の40%から15%未満へ低減'
+                    ],
+                    progress: '16.6%'
+                },
+                '2': {
+                    title: 'Phase 2: 「サービスとしての水産養殖（AaaS）」プラットフォームの商業化 (4-7年目)',
+                    objective: '完成したAAPを「サービス」として国内の養殖事業者に提供し、SaaSビジネスモデルを確立する。',
+                    activities: [
+                        'AAPのマルチテナント化とSaaS基盤構築',
+                        '料金体系（ティア制）の設計と販売体制の確立',
+                        '国内の他魚種（ホタテ、マグロ等）への横展開',
+                        '自社養殖場をR&D兼ショールームとして活用'
+                    ],
+                    kpis: [
+                        '国内有料顧客数 > 20社',
+                        '年間経常収益（ARR） > 20億円',
+                        '対応魚種 > 3種類'
+                    ],
+                    progress: '50%'
+                },
+                '3': {
+                    title: 'Phase 3: 「OceanOS」グローバル展開とエコシステム構築 (8年目以降)',
+                    objective: 'AAPを世界の標準プラットフォームへと成長させ、データ活用による新たな収益源を創出する。',
+                    activities: [
+                        '海外の主要養殖市場（ノルウェー、チリ等）への進出',
+                        'データサービスの事業化（ブルーカーボン、保険、環境モニタリング）',
+                        'APIを公開し、サードパーティ開発者を巻き込んだエコシステムを構築'
+                    ],
+                    kpis: [
+                        'グローバル顧客数 > 100社',
+                        '非AaaS収益の割合 > 15%',
+                        '海外3地域以上での市場プレゼンス確立'
+                    ],
+                    progress: '83.3%'
+                }
+            };
+            
+            function updatePhaseDetails(phase) {
+                const data = phaseData[phase];
+                phaseDetailsContainer.innerHTML = `
+                    <h3 class="text-2xl font-bold text-ocean-deep mb-4">${data.title}</h3>
+                    <p class="text-slate-600 mb-6"><strong>戦略目標:</strong> ${data.objective}</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold mb-2">主要活動</h4>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1">
+                                ${data.activities.map(act => `<li>${act}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold mb-2">主要KPI</h4>
+                            <ul class="list-disc list-inside text-slate-600 space-y-1">
+                                ${data.kpis.map(kpi => `<li>${kpi}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            phaseButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const phase = button.dataset.phase;
+                    
+                    phaseButtons.forEach(btn => {
+                        btn.classList.remove('border-teal-accent');
+                        btn.classList.add('border-slate-300');
+                        btn.querySelector('span').classList.add('text-slate-500');
+                    });
+                    
+                    button.classList.remove('border-slate-300');
+                    button.classList.add('border-teal-accent');
+                    button.querySelector('span').classList.remove('text-slate-500');
+
+                    progressBar.style.width = phaseData[phase].progress;
+                    updatePhaseDetails(phase);
+                });
+            });
+            
+            updatePhaseDetails('1');
+
+            const economicsData = {
+                labels: ['売上総利益', '純利益'],
+                datasets: [
+                    {
+                        label: '従来手法',
+                        data: [100000000, 80000000],
+                        backgroundColor: 'rgba(100, 116, 139, 0.6)',
+                        borderColor: 'rgba(100, 116, 139, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'AAP導入',
+                        data: [223550000, 173550000],
+                        backgroundColor: 'rgba(13, 148, 136, 0.6)',
+                        borderColor: 'rgba(13, 148, 136, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+            
+            const ctx = document.getElementById('economicsChart').getContext('2d');
+            const economicsChart = new Chart(ctx, {
+                type: 'bar',
+                data: economicsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return (value / 100000000).toFixed(1) + '億円';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.raw;
+                                    label += (value / 1000000).toLocaleString() + '百万円';
+                                    return label;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

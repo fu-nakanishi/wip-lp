@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牡蠣養殖DX計画 インタラクティブ・ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony Neutrals -->
+    <!-- Application Structure Plan: このSPAは、左側の固定ナビゲーションと右側の動的コンテンツエリアで構成されています。この設計は、ユーザーが報告書の複雑な内容（現状分析、戦略、実行計画、将来展望）を自由に探索できるようにするためです。各セクションは論理的にグループ化され、特に「実行計画」ではインタラクティブなチャートやテーブルを用いて、データ中心の洞察を提供します。この非線形な構造により、ユーザーは自身の興味に応じて情報にアクセスでき、全体像の理解を促進します。 -->
+    <!-- Visualization & Content Choices: 報告書の各情報を、その伝達目標に応じて最適な形式で視覚化・提示します。ROIはChart.jsを用いた複合グラフで財務的インパクトを示し、プロジェクトのロードマップはCSS Gridによる視覚的なガントチャートで表現します。RICEスコアやリスク評価はインタラクティブなテーブルとして実装し、ユーザーがデータをソートして分析できるようにします。これにより、静的な報告書を動的な意思決定支援ツールへと昇華させます。 -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #F8F7F4;
+            color: #3D405B;
+        }
+        .bg-primary { background-color: #81B29A; }
+        .text-primary { color: #81B29A; }
+        .bg-secondary { background-color: #E07A5F; }
+        .text-secondary { color: #E07A5F; }
+        .bg-base { background-color: #F8F7F4; }
+        .bg-surface { background-color: #FFFFFF; }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            background-color: #E6EBE7;
+            border-left-color: #81B29A;
+            color: #3D405B;
+        }
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .content-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+            }
+        }
+        .gantt-grid {
+            display: grid;
+            grid-template-columns: 150px repeat(15, 1fr);
+            gap: 4px;
+        }
+        .gantt-bar {
+            grid-column-start: var(--start);
+            grid-column-end: var(--end);
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: #3D405B;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            z-index: 10;
+            white-space: pre-line;
+        }
+        .has-tooltip:hover .tooltip {
+            display: block;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-surface shadow-md md:fixed md:h-full">
+            <div class="p-6">
+                <h1 class="text-xl font-bold text-primary">牡蠣養殖DX計画</h1>
+                <p class="text-sm text-gray-500 mt-1">インタラクティブ・ダッシュボード</p>
+            </div>
+            <nav id="main-nav" class="mt-4">
+                <ul>
+                    <li><a href="#" class="nav-link active block py-3 px-6" data-section="summary">サマリー</a></li>
+                    <li><a href="#" class="nav-link block py-3 px-6" data-section="challenge">現状と課題</a></li>
+                    <li><a href="#" class="nav-link block py-3 px-6" data-section="strategy">戦略的解決策</a></li>
+                    <li><a href="#" class="nav-link block py-3 px-6" data-section="plan">実行計画</a></li>
+                    <li><a href="#" class="nav-link block py-3 px-6" data-section="future">未来展望</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-4 sm:p-6 lg:p-8">
+            
+            <!-- Section: Summary -->
+            <section id="summary" class="content-section active">
+                <h2 class="text-3xl font-bold mb-2">エグゼクティブサマリー</h2>
+                <p class="mb-6 text-gray-600">本計画は、牡蠣養殖事業が直面する構造的課題を解決し、「予測型アクアカルチャー」へと転換するための包括的なDX戦略です。</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-surface p-6 rounded-lg shadow hover:shadow-xl transition-shadow">
+                        <h3 class="font-bold text-lg text-secondary">投資収益率 (ROI)</h3>
+                        <p class="text-4xl font-bold mt-2">46.0%</p>
+                        <p class="text-gray-500">(3年間)</p>
+                    </div>
+                    <div class="bg-surface p-6 rounded-lg shadow hover:shadow-xl transition-shadow">
+                        <h3 class="font-bold text-lg text-secondary">投資回収期間</h3>
+                        <p class="text-4xl font-bold mt-2">18.1<span class="text-2xl">ヶ月</span></p>
+                        <p class="text-gray-500">で投資を回収</p>
+                    </div>
+                    <div class="bg-surface p-6 rounded-lg shadow hover:shadow-xl transition-shadow">
+                        <h3 class="font-bold text-lg text-secondary">斃死率改善</h3>
+                        <p class="text-4xl font-bold mt-2">3%<span class="text-2xl">低下</span></p>
+                        <p class="text-gray-500">による収益増を見込む</p>
+                    </div>
+                </div>
+
+                <div class="bg-surface p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-bold mb-4">戦略的目標</h3>
+                    <p class="mb-4">従来の「勘と経験」に依存したリアクティブな操業から、データとAIを駆使するプロアクティブな経営モデルへ転換します。これにより、労働力不足、コスト高騰、環境変動といった深刻な経営圧力に対応し、事業の持続可能性と収益性を確保します。</p>
+                    <div class="flex flex-wrap -mx-2">
+                        <div class="w-full md:w-1/2 p-2">
+                            <h4 class="font-semibold mb-2">主な取り組み：</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li>現場特化型モバイルアプリ開発</li>
+                                <li>IoTセンサーによる環境データ自動収集</li>
+                                <li>AIによる斃死・生育予測モデル構築</li>
+                                <li>体系的なチェンジマネジメント</li>
+                            </ul>
+                        </div>
+                        <div class="w-full md:w-1/2 p-2">
+                            <h4 class="font-semibold mb-2">期待される成果：</h4>
+                             <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li>斃死率の大幅な削減</li>
+                                <li>飼料転換率(FCR)の改善</li>
+                                <li>労働生産性の向上</li>
+                                <li>データ駆動型の意思決定文化の醸成</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Challenge -->
+            <section id="challenge" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">現状と課題</h2>
+                <p class="mb-6 text-gray-600">システム修正要求の背景には、事業の根幹を揺るがす構造的な課題が存在します。</p>
+
+                <div class="bg-surface p-6 rounded-lg shadow mb-8">
+                    <h3 class="text-xl font-bold mb-4">牡蠣養殖のバリューチェーン</h3>
+                     <p class="text-sm text-gray-500 mb-4">種苗確保から出荷まで1〜3年を要する複雑なプロセス。各工程は密接に関連しています。</p>
+                    <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 text-center">
+                        <div class="flex-1 p-3 bg-gray-50 rounded-md">採苗<br><span class="text-xs text-gray-500">7-8月</span></div>
+                        <div class="self-center text-gray-400 text-2xl">→</div>
+                        <div class="flex-1 p-3 bg-gray-50 rounded-md">抑制<br><span class="text-xs text-gray-500">数ヶ月</span></div>
+                        <div class="self-center text-gray-400 text-2xl">→</div>
+                        <div class="flex-1 p-3 bg-gray-50 rounded-md">仮殖・本殖<br><span class="text-xs text-gray-500">1-2年</span></div>
+                        <div class="self-center text-gray-400 text-2xl">→</div>
+                        <div class="flex-1 p-3 bg-gray-50 rounded-md">育成管理<br><span class="text-xs text-gray-500">随時</span></div>
+                        <div class="self-center text-gray-400 text-2xl">→</div>
+                        <div class="flex-1 p-3 bg-gray-50 rounded-md">水揚げ・浄化<br><span class="text-xs text-gray-500">出荷前</span></div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">既存システムはこれらの事後記録に留まり、未来予測やリアルタイムの意思決定を支援できていません。</p>
+                </div>
+
+                <div class="bg-surface p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-bold mb-4">顕在化する4つの経営リスク</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="border-l-4 border-secondary p-4 bg-red-50 rounded-r-lg">
+                            <h4 class="font-bold">人的要因</h4>
+                            <p class="text-sm text-gray-600">高齢化と後継者不足による「勘と経験」の喪失。</p>
+                        </div>
+                         <div class="border-l-4 border-secondary p-4 bg-red-50 rounded-r-lg">
+                            <h4 class="font-bold">経済的圧力</h4>
+                            <p class="text-sm text-gray-600">燃油・飼料価格の高騰と消費量の減少による収益性低下。</p>
+                        </div>
+                         <div class="border-l-4 border-secondary p-4 bg-red-50 rounded-r-lg">
+                            <h4 class="font-bold">環境変動</h4>
+                            <p class="text-sm text-gray-600">気候変動による水温上昇や赤潮発生頻度の増加。</p>
+                        </div>
+                         <div class="border-l-4 border-secondary p-4 bg-red-50 rounded-r-lg">
+                            <h4 class="font-bold">データの分断</h4>
+                            <p class="text-sm text-gray-600">作業日誌、水質、気象データが散在し、統合分析が不可能。</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 class="font-bold text-blue-800">本質的論点</h4>
+                        <p class="text-blue-700">失われつつある個人の経験知に依存した「リアクティブな管理」から、客観的データと予測に基づく「プロアクティブな経営」へと事業全体を変革し、レジリエンスと持続可能性を確保する。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section: Strategy -->
+            <section id="strategy" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">戦略的解決策</h2>
+                <p class="mb-6 text-gray-600">本質的論点を4つのサブ論点に分解し、それぞれに対する解決策のフレームワークを提示します。</p>
+
+                <div id="strategy-tabs" class="space-y-4">
+                    <div class="bg-surface rounded-lg shadow">
+                        <button data-tab="strategy-1" class="tab-button w-full text-left p-4 font-bold text-lg focus:outline-none">1. データ収集と品質 (Data Acquisition & Integrity)</button>
+                        <div id="strategy-1" class="tab-content p-4 border-t border-gray-200 hidden">
+                            <p class="font-semibold text-red-600 mb-2">課題：</p>
+                            <p class="mb-4">手入力によるヒューマンエラー、過酷な船上環境での入力困難、リアルタイム環境データの欠如。</p>
+                            <p class="font-semibold text-green-700 mb-2">解決策フレームワーク：</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong class="text-primary">フィールド特化型モバイルアプリ：</strong>オフラインファースト、高コントラストUI、最小タップ操作を実現するPWAを開発。</li>
+                                <li><strong class="text-primary">IoTセンサーによる自動収集：</strong>各筏にセンサーを設置し、水温・塩分等の環境データをリアルタイムで自動収集。</li>
+                                <li><strong class="text-primary">データガバナンス体制構築：</strong>データ品質責任者を任命し、信頼できる唯一のデータソース(SSOT)を確立。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-surface rounded-lg shadow">
+                        <button data-tab="strategy-2" class="tab-button w-full text-left p-4 font-bold text-lg focus:outline-none">2. 予測分析 (Predictive Analytics)</button>
+                        <div id="strategy-2" class="tab-content p-4 border-t border-gray-200 hidden">
+                             <p class="font-semibold text-red-600 mb-2">課題：</p>
+                            <p class="mb-4">意思決定が過去の経験則に依存し、未来を予測する仕組みが存在しない。「後追い」の経営から脱却できていない。</p>
+                            <p class="font-semibold text-green-700 mb-2">解決策フレームワーク：</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong class="text-primary">生育予測モデル：</strong>日々のデータから成長曲線を予測し、最適な収穫時期を計画。販売戦略を高度化。</li>
+                                <li><strong class="text-primary">斃死リスク予測モデル：</strong>環境データと過去の斃死イベントを相関分析し、早期警告アラートを発報。予防措置を可能にし、大規模損害を回避。</li>
+                                <li><strong class="text-primary">給餌最適化（将来展望）：</strong>画像認識とAIで最適な給餌を判断し、コスト削減と環境負荷低減を実現。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-surface rounded-lg shadow">
+                        <button data-tab="strategy-3" class="tab-button w-full text-left p-4 font-bold text-lg focus:outline-none">3. UXと現場導入 (User Experience & Adoption)</button>
+                        <div id="strategy-3" class="tab-content p-4 border-t border-gray-200 hidden">
+                             <p class="font-semibold text-red-600 mb-2">課題：</p>
+                            <p class="mb-4">伝統的産業における新しいテクノロジーへの心理的抵抗。使いにくいシステムは現場で放棄される。</p>
+                            <p class="font-semibold text-green-700 mb-2">解決策フレームワーク：</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong class="text-primary">人間中心設計：</strong>現場作業員を設計の中心に据え、彼らのためのUI/UXを徹底追及。</li>
+                                <li><strong class="text-primary">戦略的チェンジマネジメント(ADKARモデル)：</strong>変革の必要性の「認知」、利用したい「欲求」の醸成、使い方「知識」の提供、実践する「能力」の育成、そして成功体験の「強化」という体系的アプローチで導入を成功に導く。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-surface rounded-lg shadow">
+                        <button data-tab="strategy-4" class="tab-button w-full text-left p-4 font-bold text-lg focus:outline-none">4. データ基盤とアーキテクチャ (Data Governance & Architecture)</button>
+                        <div id="strategy-4" class="tab-content p-4 border-t border-gray-200 hidden">
+                            <p class="font-semibold text-red-600 mb-2">課題：</p>
+                            <p class="mb-4">既存システムは大量のIoTデータをリアルタイム処理できず、スケーラビリティに欠ける。データが価値のない沼(データスワンプ)になる危険性。</p>
+                            <p class="font-semibold text-green-700 mb-2">解決策フレームワーク：</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong class="text-primary">モダンなクラウドアーキテクチャ：</strong>AWS/Azureを活用し、IoT Core, S3, Redshift, SageMaker等を組み合わせたスケーラブルなデータ基盤を構築。</li>
+                                <li><strong class="text-primary">データガバナンス憲章の策定：</strong>全社的なデータ管理ルールを定義し、データの品質・セキュリティ・活用を統制。データ資産価値を長期的に維持・向上。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Plan -->
+            <section id="plan" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">実行計画</h2>
+                <p class="mb-6 text-gray-600">スクラムフレームワークを採用し、客観的なデータに基づいてタスクの優先順位を決定。具体的なロードマップと投資対効果、リスクを明確にします。</p>
+
+                <div class="bg-surface p-6 rounded-lg shadow mb-8">
+                    <h3 class="text-xl font-bold mb-4">機能優先順位 (RICEスコア)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Reach(影響範囲), Impact(影響度), Confidence(確信度), Effort(工数)を基にスコアを算出し、客観的な優先順位を決定します。ヘッダーをクリックしてソートできます。</p>
+                    <div class="overflow-x-auto">
+                        <table id="rice-table" class="w-full text-sm text-left">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 cursor-pointer" data-sort="epic">エピック(機能群)</th>
+                                    <th class="p-3 text-center cursor-pointer" data-sort="reach">Reach</th>
+                                    <th class="p-3 text-center cursor-pointer" data-sort="impact">Impact</th>
+                                    <th class="p-3 text-center cursor-pointer" data-sort="confidence">Confidence</th>
+                                    <th class="p-3 text-center cursor-pointer" data-sort="effort">Effort</th>
+                                    <th class="p-3 text-center cursor-pointer" data-sort="rice">RICEスコア</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-surface p-6 rounded-lg shadow mb-8">
+                    <h3 class="text-xl font-bold mb-4">プロジェクトロードマップ (15ヶ月)</h3>
+                    <div class="overflow-x-auto p-2">
+                        <div class="gantt-grid min-w-[1000px]">
+                            <div class="font-bold text-xs text-right pr-2">フェーズ</div>
+                            <div class="text-center text-xs text-gray-500" style="grid-column: 2 / span 3;">1-3ヶ月</div>
+                            <div class="text-center text-xs text-gray-500" style="grid-column: 5 / span 4;">4-7ヶ月</div>
+                            <div class="text-center text-xs text-gray-500" style="grid-column: 9 / span 5;">8-12ヶ月</div>
+                            <div class="text-center text-xs text-gray-500" style="grid-column: 14 / span 3;">13-15ヶ月</div>
+
+                            <div class="font-bold text-sm text-right pr-2 self-center">ディスカバリーと基盤構築</div>
+                            <div class="gantt-bar bg-blue-400 p-2 rounded text-white text-xs has-tooltip" style="--start: 2; --end: 5;">
+                                <span class="hidden md:inline">Phase 1</span>
+                                <div class="tooltip">・要件定義と現場分析\n・技術アーキテクチャ決定\n・開発環境構築</div>
+                            </div>
+                            
+                            <div class="font-bold text-sm text-right pr-2 self-center">MVP開発とパイロット導入</div>
+                            <div class="gantt-bar bg-green-500 p-2 rounded text-white text-xs has-tooltip" style="--start: 5; --end: 9;">
+                                <span class="hidden md:inline">Phase 2</span>
+                                <div class="tooltip">・オフライン対応アプリ(MVP)開発\n・IoTデータパイプライン構築\n・パイロット運用とフィードバック収集</div>
+                            </div>
+
+                            <div class="font-bold text-sm text-right pr-2 self-center">AI開発と全社展開</div>
+                             <div class="gantt-bar bg-yellow-500 p-2 rounded text-white text-xs has-tooltip" style="--start: 9; --end: 14;">
+                                <span class="hidden md:inline">Phase 3</span>
+                                <div class="tooltip">・斃死/生育予測AIモデル開発\n・アプリ改善と全社展開\n・管理者ダッシュボード開発</div>
+                            </div>
+                            
+                            <div class="font-bold text-sm text-right pr-2 self-center">最適化と引き渡し</div>
+                            <div class="gantt-bar bg-purple-500 p-2 rounded text-white text-xs has-tooltip" style="--start: 14; --end: 17;">
+                                <span class="hidden md:inline">Phase 4</span>
+                                <div class="tooltip">・システム安定化とAI精度向上\n・最終トレーニング実施\n・運用保守チームへ引き渡し</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-surface p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-bold mb-4">投資対効果分析 (3年間)</h3>
+                        <div class="chart-container">
+                            <canvas id="roiChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-surface p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-bold mb-4">リスク評価と軽減計画</h3>
+                        <p class="text-sm text-gray-500 mb-4">主要なリスクをスコア化し、プロアクティブに対応します。</p>
+                         <div class="overflow-y-auto max-h-[400px]">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-gray-100 sticky top-0">
+                                    <tr>
+                                        <th class="p-2">リスク内容</th>
+                                        <th class="p-2 text-center">スコア</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="risk-table">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section: Future -->
+            <section id="future" class="content-section">
+                <h2 class="text-3xl font-bold mb-2">成功の測定と将来展望</h2>
+                <p class="mb-6 text-gray-600">プロジェクトの成功を客観的なKPIで測定し、養殖業の未来像「デジタルツイン」へと繋げます。</p>
+                
+                <div class="bg-surface p-6 rounded-lg shadow mb-8">
+                    <h3 class="text-xl font-bold mb-4">主要業績評価指標 (KPI)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-primary">経営・操業</h4>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li>斃死率: <span class="font-bold">3%ポイント低下</span></li>
+                                <li>FCR: <span class="font-bold">10%改善</span></li>
+                                <li>労働生産性: <span class="font-bold">75%向上</span></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-primary">システム利用</h4>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li>ユーザー定着率: <span class="font-bold">>95%</span></li>
+                                <li>データ入力エラー率: <span class="font-bold"><2%</span></li>
+                                <li>SUSスコア: <span class="font-bold">>80点</span></li>
+                            </ul>
+                        </div>
+                         <div>
+                            <h4 class="font-semibold text-primary">財務</h4>
+                            <ul class="list-disc list-inside mt-2 space-y-1">
+                                <li>ROI (3年): <span class="font-bold">46%</span></li>
+                                <li>投資回収期間: <span class="font-bold">18ヶ月</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="bg-surface p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-bold mb-4">将来展望：インテリジェント養殖から「デジタルツイン」へ</h3>
+                    <p class="mb-4">本プロジェクトは、物理的な養殖場と一対一で対応する仮想的な養殖場「デジタルツイン」構築への第一歩です。</p>
+                    <div class="flex flex-col md:flex-row items-center text-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="p-4 border rounded-lg flex-1">
+                            <h4 class="font-bold">現在</h4>
+                            <p class="text-sm">過去データから未来を「予測」</p>
+                        </div>
+                        <div class="font-bold text-primary text-2xl self-center p-2">⇒</div>
+                        <div class="p-4 border-2 border-primary rounded-lg flex-1 bg-green-50">
+                            <h4 class="font-bold">本プロジェクト</h4>
+                            <p class="text-sm">AIがリスクを「警告」し、人が判断</p>
+                        </div>
+                        <div class="font-bold text-primary text-2xl self-center p-2">⇒</div>
+                        <div class="p-4 border rounded-lg flex-1">
+                            <h4 class="font-bold">未来 (デジタルツイン)</h4>
+                            <p class="text-sm">仮想空間で未来を「実験」し、AIが「自動制御」</p>
+                        </div>
+                    </div>
+                     <p class="mt-4 text-sm text-gray-600">高度なシミュレーション、自律的な最適化、生態系レベルでのリスク管理を実現し、企業の未来の競争優位性を築きます。</p>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Data
+            const riceData = [
+                { epic: '斃死リスク予測AIモデル', reach: 4, impact: 5, confidence: 0.7, effort: 10, rice: 14.0 },
+                { epic: 'IoTセンサーデータ連携基盤', reach: 4, impact: 5, confidence: 0.8, effort: 12, rice: 13.3 },
+                { epic: 'オフライン対応モバイルアプリ (MVP)', reach: 5, impact: 4, confidence: 0.9, effort: 15, rice: 12.0 },
+                { epic: '生育予測AIモデルと販売連携', reach: 3, impact: 4, confidence: 0.7, effort: 8, rice: 10.5 },
+                { epic: '管理者向けWebダッシュボード', reach: 2, impact: 3, confidence: 0.95, effort: 6, rice: 9.5 },
+                { epic: '給餌最適化AI（将来拡張）', reach: 5, impact: 5, confidence: 0.5, effort: 20, rice: 6.3 }
+            ];
+
+            const riskData = [
+                { risk: '現場作業員の強い抵抗によるアプリ利用の低迷', score: 20, mitigation: 'チェンジマネジメント計画の徹底実行。現場のキーパーソンを設計段階から巻き込み、パイロット導入で成功体験を共有する。' },
+                { risk: '要件定義の曖昧さによる手戻りと予算超過', score: 15, mitigation: 'アジャイル開発を採用し、スプリント毎に要件を確認・調整する。プロダクトオーナーが常に開発チームと密に連携し、認識の齟齬を早期に解消する。' },
+                { risk: 'AIモデルの予測精度が目標値に到達しない', score: 12, mitigation: '十分な量の高品質データを確保する。複数のアルゴリズムを試し、継続的なモデル改善サイクルを計画に含める。' },
+                { risk: 'オフライン環境でのデータ同期に予期せぬ不具合が発生', score: 12, mitigation: 'オフラインファーストアーキテクチャの経験が豊富なエンジニアをアサインする。多様なネットワーク状況を想定した徹底的なテストを実施する。' },
+                { risk: 'キーパーソン（開発者、PO）の離職による遅延', score: 10, mitigation: '知識の属人化を防ぐため、徹底したドキュメント作成とペアプログラミングを推奨する。重要な役割にはバックアップ担当者を設定する。' },
+                { risk: 'クラウド利用料が想定を上回る', score: 6, mitigation: 'コスト最適化を設計段階から考慮する（サーバーレスアーキテクチャの採用等）。定期的にコストを監視し、異常な増加には迅速に対応する。' }
+            ];
+
+            // Navigation
+            const navLinks = document.querySelectorAll('#main-nav a');
+            const sections = document.querySelectorAll('.content-section');
+            navLinks.forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const sectionId = link.getAttribute('data-section');
+
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    sections.forEach(s => s.classList.remove('active'));
+                    document.getElementById(sectionId).classList.add('active');
+                });
+            });
+
+            // Strategy Tabs (Accordion style)
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const contentId = button.getAttribute('data-tab');
+                    const content = document.getElementById(contentId);
+                    const isExpanded = content.style.display === 'block';
+
+                    // Close all tabs
+                    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+                    
+                    // Toggle current tab
+                    if (!isExpanded) {
+                        content.style.display = 'block';
+                    }
+                });
+            });
+
+            // RICE Table
+            const riceTableBody = document.querySelector('#rice-table tbody');
+            let currentSort = { key: 'rice', asc: false };
+
+            function renderRiceTable(data) {
+                riceTableBody.innerHTML = '';
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="p-3 font-medium">${item.epic}</td>
+                        <td class="p-3 text-center">${item.reach}</td>
+                        <td class="p-3 text-center">${item.impact}</td>
+                        <td class="p-3 text-center">${(item.confidence * 100).toFixed(0)}%</td>
+                        <td class="p-3 text-center">${item.effort}</td>
+                        <td class="p-3 text-center font-bold text-primary">${item.rice.toFixed(1)}</td>
+                    `;
+                    riceTableBody.appendChild(row);
+                });
+            }
+
+            document.querySelector('#rice-table thead').addEventListener('click', e => {
+                const key = e.target.dataset.sort;
+                if (!key) return;
+                
+                const asc = currentSort.key === key ? !currentSort.asc : true;
+                currentSort = { key, asc };
+
+                const sortedData = [...riceData].sort((a, b) => {
+                    if (a[key] < b[key]) return asc ? -1 : 1;
+                    if (a[key] > b[key]) return asc ? 1 : -1;
+                    return 0;
+                });
+                renderRiceTable(sortedData);
+            });
+            
+            // Risk Table
+            const riskTableBody = document.getElementById('risk-table');
+            function renderRiskTable(data) {
+                riskTableBody.innerHTML = '';
+                data.forEach(item => {
+                    const scoreColor = item.score >= 15 ? 'bg-red-200 text-red-800' : item.score >= 10 ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800';
+                    const row = document.createElement('tr');
+                    row.className = 'border-b hover:bg-gray-50';
+                    row.innerHTML = `
+                        <td class="p-3">
+                            <p class="font-medium">${item.risk}</p>
+                            <p class="text-xs text-gray-500 mt-1">${item.mitigation}</p>
+                        </td>
+                        <td class="p-3 text-center">
+                            <span class="px-2 py-1 rounded-full font-bold ${scoreColor}">${item.score}</span>
+                        </td>
+                    `;
+                    riskTableBody.appendChild(row);
+                });
+            }
+
+
+            // ROI Chart
+            function createRoiChart() {
+                const ctx = document.getElementById('roiChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['初年度', '2年目', '3年目'],
+                        datasets: [
+                            {
+                                label: '年間キャッシュフロー (百万円)',
+                                data: [-120, 89, 89],
+                                backgroundColor: 'rgba(129, 178, 154, 0.6)',
+                                borderColor: 'rgba(129, 178, 154, 1)',
+                                borderWidth: 1,
+                                order: 2
+                            },
+                            {
+                                label: '累積キャッシュフロー (百万円)',
+                                data: [-120, -31, 58],
+                                type: 'line',
+                                fill: false,
+                                borderColor: '#E07A5F',
+                                tension: 0.1,
+                                order: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + 'M';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            label += context.parsed.y.toLocaleString() + '百万円';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Initial render
+            renderRiceTable([...riceData].sort((a,b) => b.rice - a.rice));
+            renderRiskTable([...riskData].sort((a,b) => b.score - a.score));
+            createRoiChart();
+        });
+    </script>
+</body>
+</html>
